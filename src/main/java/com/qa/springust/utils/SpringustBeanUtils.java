@@ -8,12 +8,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
 public class SpringustBeanUtils {
 
-    public static void mergeObject(Object source, Object target) {
+    public SpringustBeanUtils() {
+
+    }
+
+    public static void mergeNotNull(Object source, Object target) {
         BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
     }
 

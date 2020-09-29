@@ -2,6 +2,8 @@ package com.qa.springust.rest;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,29 +33,29 @@ public class BandController {
 
     @PostMapping("/create")
     public ResponseEntity<BandDTO> create(@RequestBody BandDTO bandDTO) {
-        BandDTO created = this.service.createBand(bandDTO);
+        BandDTO created = this.service.create(bandDTO);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @GetMapping("/readAll")
+    @GetMapping("/read")
     public ResponseEntity<List<BandDTO>> getAllBands() {
-        return ResponseEntity.ok(this.service.getAllBands());
+        return ResponseEntity.ok(this.service.read());
     }
 
     @GetMapping("/read/{id}")
     public ResponseEntity<BandDTO> getBandById(@PathVariable Long id) {
-        return ResponseEntity.ok(this.service.getBandById(id));
+        return ResponseEntity.ok(this.service.read(id));
     }
 
-    @PutMapping("update/{id}")
-    public ResponseEntity<BandDTO> updateBandById(@PathVariable Long id, @RequestBody BandDTO bandDTO) {
-        BandDTO updated = this.service.updateBandById(bandDTO, id);
+    @PutMapping("/update")
+    public ResponseEntity<BandDTO> updateBand(@PathParam("id") Long id, @RequestBody BandDTO bandDTO) {
+        BandDTO updated = this.service.update(bandDTO, id);
         return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<BandDTO> deleteBandById(@PathVariable Long id) {
-        return this.service.deleteBandById(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+        return this.service.delete(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

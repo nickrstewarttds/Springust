@@ -3,49 +3,50 @@ package com.qa.springust.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Getter(AccessLevel.PUBLIC)
-@Setter(AccessLevel.PUBLIC)
-@ToString
+@NoArgsConstructor
+@Getter
+@Setter
 @EqualsAndHashCode
 public class Guitarist {
 
-    // organise imports with CTRL + SHIFT + O
-
     @Id // Primary Key
-    @GeneratedValue // Auto-increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment
     private Long id;
 
-    @Column(name = "guitarist_name", unique = true)
-    @Size(min = 1, max = 120) // varchar(20)
+    @Column(name = "duck_name", unique = true)
+    @NotNull
+    @Size(min = 0, max = 55)
     private String name;
 
-    @Column(name = "number_of_strings")
     @Min(4)
     @Max(12)
     private Integer noOfStrings;
 
-    @Column(name = "guitar_type")
-    @Size(min = 1, max = 120)
+    @NotNull
     private String type;
 
     @ManyToOne(targetEntity = Band.class)
     private Band band;
+
+    public Guitarist(String name, Integer noOfStrings, String type) {
+        super();
+        this.name = name;
+        this.noOfStrings = noOfStrings;
+        this.type = type;
+    }
 
 }

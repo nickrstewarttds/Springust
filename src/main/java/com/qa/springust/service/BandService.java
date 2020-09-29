@@ -22,7 +22,6 @@ public class BandService {
 
     @Autowired
     public BandService(BandRepository repo, ModelMapper mapper) {
-        super();
         this.repo = repo;
         this.mapper = mapper;
     }
@@ -35,28 +34,31 @@ public class BandService {
         return this.mapper.map(bandDTO, Band.class);
     }
 
-    public BandDTO createBand(BandDTO bandDTO) {
+    public BandDTO create(BandDTO bandDTO) {
         Band toSave = this.mapFromDTO(bandDTO);
         Band saved = this.repo.save(toSave);
         return this.mapToDTO(saved);
     }
 
-    public List<BandDTO> getAllBands() {
+    public List<BandDTO> read() {
         return this.repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public BandDTO getBandById(Long id) {
+    public BandDTO read(Long id) {
         Band found = this.repo.findById(id).orElseThrow(BandNotFoundException::new);
         return this.mapToDTO(found);
     }
 
-    public BandDTO updateBandById(BandDTO bandDTO, Long id) {
+    public BandDTO update(BandDTO bandDTO, Long id) {
         Band toUpdate = this.repo.findById(id).orElseThrow(BandNotFoundException::new);
-        SpringustBeanUtils.mergeObject(bandDTO, toUpdate);
+        SpringustBeanUtils.mergeNotNull(bandDTO, toUpdate);
         return this.mapToDTO(toUpdate);
     }
 
-    public boolean deleteBandById(Long id) {
+    public boolean delete(Long id) {
+        if (!this.repo.existsById(id)) {
+            throw new BandNotFoundException();
+        }
         this.repo.deleteById(id);
         return !this.repo.existsById(id);
     }

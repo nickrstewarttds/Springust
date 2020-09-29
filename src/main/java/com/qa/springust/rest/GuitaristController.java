@@ -2,6 +2,8 @@ package com.qa.springust.rest;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qa.springust.dto.GuitaristDTO;
 import com.qa.springust.service.GuitaristService;
-
-// localhost:8901/guitarist/<whatever-crud-function>
 
 @RestController
 @RequestMapping("/guitarist")
@@ -37,7 +37,6 @@ public class GuitaristController {
     // which will cause exceptions later on!
     private GuitaristService service;
 
-    @Autowired
     // Constructor Autowiring:
     //
     // Spring wires the Controller up to the Service at the moment the Controller is
@@ -46,6 +45,7 @@ public class GuitaristController {
     // This causes fewer exceptions - if we want to make sure our autowiring has
     // worked,
     // all we need to do is check if the Controller exists!
+    @Autowired
     public GuitaristController(GuitaristService service) {
         super();
         this.service = service;
@@ -57,7 +57,7 @@ public class GuitaristController {
 
         // creates the entity and passes it back (through Service to Repo to Domain to
         // DB)
-        GuitaristDTO created = this.service.createGuitarist(guitaristDTO);
+        GuitaristDTO created = this.service.create(guitaristDTO);
 
         // returns the entity in a ResponseEntity format, which converts it to JSON so
         // we can see it
@@ -65,23 +65,22 @@ public class GuitaristController {
     }
 
     // readAll
-    @GetMapping("/readAll")
+    @GetMapping("/read")
     public ResponseEntity<List<GuitaristDTO>> getAllGuitarists() {
-        return ResponseEntity.ok(this.service.getAllGuitarists());
+        return ResponseEntity.ok(this.service.read());
     }
 
     // readById
     @GetMapping("/read/{id}")
     public ResponseEntity<GuitaristDTO> getGuitaristById(@PathVariable Long id) {
-        return ResponseEntity.ok(this.service.getGuitaristById(id));
+        return ResponseEntity.ok(this.service.read(id));
     }
 
     // update
-    @PutMapping("/update/{id}")
-    public ResponseEntity<GuitaristDTO> updateGuitaristById(@PathVariable Long id,
+    @PutMapping("/update")
+    public ResponseEntity<GuitaristDTO> updateGuitaristById(@PathParam("id") Long id,
             @RequestBody GuitaristDTO guitaristDTO) {
-        GuitaristDTO updated = this.service.updateGuitaristById(guitaristDTO, id);
-        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(this.service.update(guitaristDTO, id), HttpStatus.ACCEPTED);
     }
 
     // delete
@@ -91,7 +90,7 @@ public class GuitaristController {
         //
         // return the boolean result of the delete function
         // UNLESS the HTTP status returned is 204, in which case throw HTTP status 500
-        return this.service.deleteGuitaristById(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) // 204
+        return this.service.delete(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) // 204
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 

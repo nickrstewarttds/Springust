@@ -2,16 +2,15 @@ package com.qa.springust;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
-@EnableSwagger2
-public class SpringustApplication {
+@EnableWebMvc
+public class SpringustApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        ApplicationContext beanbag = SpringApplication.run(SpringustApplication.class, args);
+        SpringApplication.run(SpringustApplication.class, args);
     }
 
 }

@@ -22,7 +22,6 @@ public class GuitaristService {
 
     @Autowired
     public GuitaristService(GuitaristRepository repo, ModelMapper mapper) {
-        super();
         this.repo = repo;
         this.mapper = mapper;
     }
@@ -36,32 +35,35 @@ public class GuitaristService {
     }
 
     // create
-    public GuitaristDTO createGuitarist(GuitaristDTO guitaristDTO) {
+    public GuitaristDTO create(GuitaristDTO guitaristDTO) {
         Guitarist toSave = this.mapFromDTO(guitaristDTO);
         Guitarist saved = this.repo.save(toSave);
         return this.mapToDTO(saved);
     }
 
     // readAll
-    public List<GuitaristDTO> getAllGuitarists() {
+    public List<GuitaristDTO> read() {
         return this.repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     // readById
-    public GuitaristDTO getGuitaristById(Long id) {
+    public GuitaristDTO read(Long id) {
         Guitarist found = this.repo.findById(id).orElseThrow(GuitaristNotFoundException::new);
         return this.mapToDTO(found);
     }
 
     // update
-    public GuitaristDTO updateGuitaristById(GuitaristDTO guitaristDTO, Long id) {
+    public GuitaristDTO update(GuitaristDTO guitaristDTO, Long id) {
         Guitarist toUpdate = this.repo.findById(id).orElseThrow(GuitaristNotFoundException::new);
-        SpringustBeanUtils.mergeObject(guitaristDTO, toUpdate);
+        SpringustBeanUtils.mergeNotNull(guitaristDTO, toUpdate);
         return this.mapToDTO(this.repo.save(toUpdate));
     }
 
     // delete
-    public boolean deleteGuitaristById(Long id) {
+    public boolean delete(Long id) {
+        if (!this.repo.existsById(id)) {
+            throw new GuitaristNotFoundException();
+        }
         this.repo.deleteById(id);
         return !this.repo.existsById(id);
     }
