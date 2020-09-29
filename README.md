@@ -9,6 +9,10 @@ Built with the following starters:
 - Spring Data JPA
 - Lombok
 
+Requires one Maven dependency:
+
+- [ModelMapper](https://mvnrepository.com/artifact/org.modelmapper/modelmapper/2.3.8)
+
 ## Authors
 
 - **Nick Johnson** - [nickrstewarttds](https://github.com/nickrstewarttds)
