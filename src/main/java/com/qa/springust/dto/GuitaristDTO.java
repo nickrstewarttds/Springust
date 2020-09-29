@@ -12,8 +12,8 @@ import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Getter(lazy = true)
-@Setter
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
 @ToString
 @EqualsAndHashCode
 public class GuitaristDTO {

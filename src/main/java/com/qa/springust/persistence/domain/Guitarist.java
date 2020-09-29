@@ -14,15 +14,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Getter(lazy = true)
-@Setter
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
 @ToString
 @EqualsAndHashCode
 public class Guitarist {
@@ -35,17 +34,14 @@ public class Guitarist {
 
     @Column(name = "guitarist_name", unique = true)
     @Size(min = 1, max = 120) // varchar(20)
-    @NonNull
     private String name;
 
     @Column(name = "number_of_strings")
-    @NonNull
     @Min(4)
     @Max(12)
     private Integer noOfStrings;
 
     @Column(name = "guitar_type")
-    @NonNull
     @Size(min = 1, max = 120)
     private String type;
 

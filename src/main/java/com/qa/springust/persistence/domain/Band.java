@@ -21,8 +21,8 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Getter(lazy = true)
-@Setter
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
 @ToString
 @EqualsAndHashCode
 public class Band {
