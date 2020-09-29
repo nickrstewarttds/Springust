@@ -7,20 +7,21 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@Getter(lazy = true)
 @Setter
 @ToString
 @EqualsAndHashCode
@@ -30,33 +31,25 @@ public class Guitarist {
 
     @Id // Primary Key
     @GeneratedValue // Auto-increment
-    private long id;
+    private Long id;
 
     @Column(name = "guitarist_name", unique = true)
-    @NotNull
     @Size(min = 1, max = 120) // varchar(20)
+    @NonNull
     private String name;
 
-    @Column(name = "strings")
+    @Column(name = "number_of_strings")
+    @NonNull
     @Min(4)
     @Max(12)
-    private int noOfStrings;
+    private Integer noOfStrings;
 
-    @Column(name = "type")
-    @NotNull
+    @Column(name = "guitar_type")
+    @NonNull
     @Size(min = 1, max = 120)
     private String type;
 
     @ManyToOne(targetEntity = Band.class)
     private Band band;
-
-    // generate code using SHIFT + ALT + S
-    public Guitarist(@NotNull @Size(min = 1, max = 120) String name, @Min(4) @Max(12) int noOfStrings,
-            @NotNull @Size(min = 1, max = 120) String type) {
-        super();
-        this.name = name;
-        this.noOfStrings = noOfStrings;
-        this.type = type;
-    }
 
 }

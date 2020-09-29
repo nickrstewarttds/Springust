@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,9 +19,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@Getter(lazy = true)
 @Setter
 @ToString
 @EqualsAndHashCode
@@ -28,18 +29,12 @@ public class Band {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Column(name = "band_name", unique = true)
     private String name;
 
     @OneToMany(targetEntity = Guitarist.class, cascade = CascadeType.ALL)
     private List<Guitarist> guitarists = new ArrayList<>();
-
-    // constructor for making a 'blank' band
-    public Band(String name) {
-        super();
-        this.name = name;
-    }
 
 }
