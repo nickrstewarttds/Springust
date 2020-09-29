@@ -9,9 +9,11 @@ Built with the following starters:
 - Spring Data JPA
 - Lombok
 
-Requires one Maven dependency:
+Requires the following Maven dependencies:
 
 - [ModelMapper](https://mvnrepository.com/artifact/org.modelmapper/modelmapper/2.3.8)
+- [Swagger UI](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui/3.0.0)
+- [Swagger2](https://mvnrepository.com/artifact/io.springfox/springfox-swagger2/3.0.0)
 
 ## Authors
 
