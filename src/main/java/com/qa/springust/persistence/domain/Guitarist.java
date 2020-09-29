@@ -3,7 +3,6 @@ package com.qa.springust.persistence.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
@@ -24,10 +23,10 @@ import lombok.Setter;
 public class Guitarist {
 
     @Id // Primary Key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment
+    @GeneratedValue
     private Long id;
 
-    @Column(name = "duck_name", unique = true)
+    @Column(name = "guitarist_name", unique = true)
     @NotNull
     @Size(min = 0, max = 55)
     private String name;

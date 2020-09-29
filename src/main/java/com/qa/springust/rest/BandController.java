@@ -33,8 +33,7 @@ public class BandController {
 
     @PostMapping("/create")
     public ResponseEntity<BandDTO> create(@RequestBody BandDTO bandDTO) {
-        BandDTO created = this.service.create(bandDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(this.service.create(bandDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/read")
@@ -49,8 +48,7 @@ public class BandController {
 
     @PutMapping("/update")
     public ResponseEntity<BandDTO> updateBand(@PathParam("id") Long id, @RequestBody BandDTO bandDTO) {
-        BandDTO updated = this.service.update(bandDTO, id);
-        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(this.service.update(bandDTO, id), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/delete/{id}")

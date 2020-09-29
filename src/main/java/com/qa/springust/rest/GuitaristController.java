@@ -54,14 +54,7 @@ public class GuitaristController {
     // create
     @PostMapping("/create")
     public ResponseEntity<GuitaristDTO> create(@RequestBody GuitaristDTO guitaristDTO) {
-
-        // creates the entity and passes it back (through Service to Repo to Domain to
-        // DB)
-        GuitaristDTO created = this.service.create(guitaristDTO);
-
-        // returns the entity in a ResponseEntity format, which converts it to JSON so
-        // we can see it
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(this.service.create(guitaristDTO), HttpStatus.CREATED);
     }
 
     // readAll
