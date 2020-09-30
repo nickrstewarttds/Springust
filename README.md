@@ -27,4 +27,7 @@ Requirements (if using Eclipse):
 
 ## Authors
 
-- **Nick Johnson** - [nickrstewarttds](https://github.com/nickrstewarttds)
+- **Nick Johnson** - [nickrstewarttds](https://github.com/nickrstewarttds) - original author
+- **Jordan Harrison** - [JHarry444](https://github.com/jharry444) - QA's resident Java and Sping wizard
+- **Vinesh Ghela** - [vghela](https://github.com/vghela) - debugged and fixed entity-relationship issues
+- **Tay Dzonu** - [Tay-Dzonu-QA](https://github.com/Tay-Dzonu-QA) - fixed one final issue in the Service layer
