@@ -19,6 +19,12 @@ Requirements (if using Eclipse):
 - [Spring Tool Suite](https://marketplace.eclipse.org/content/spring-tools-4-aka-spring-tool-suite-4)
 - [Lombok](https://projectlombok.org/setup/eclipse)
 
+## API
+
+- Runs out-of-the-box on `localhost:8901` (can be changed within the `application-dev.properties` file)
+- H2 console is accessible at the path `/h2` with JDBC URL `jdbc:h2:mem:springust` and default username/password
+- Swagger UI showing API endpoints is accessible at the path `/swagger-ui/index.html`
+
 ## Authors
 
 - **Nick Johnson** - [nickrstewarttds](https://github.com/nickrstewarttds)
