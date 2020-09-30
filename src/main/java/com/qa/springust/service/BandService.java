@@ -60,7 +60,7 @@ public class BandService {
     public BandDTO update(BandDTO bandDTO, Long id) {
         Band toUpdate = this.repo.findById(id).orElseThrow(BandNotFoundException::new);
         SpringustBeanUtils.mergeNotNull(bandDTO, toUpdate);
-        return this.mapToDTO(toUpdate);
+        return this.mapToDTO(this.repo.save(toUpdate));
     }
 
     public boolean delete(Long id) {
