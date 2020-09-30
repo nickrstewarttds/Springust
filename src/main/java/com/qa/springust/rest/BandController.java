@@ -2,8 +2,6 @@ package com.qa.springust.rest;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +44,8 @@ public class BandController {
         return ResponseEntity.ok(this.service.read(id));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<BandDTO> updateBand(@PathParam("id") Long id, @RequestBody BandDTO bandDTO) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BandDTO> updateBand(@PathVariable Long id, @RequestBody BandDTO bandDTO) {
         return new ResponseEntity<>(this.service.update(bandDTO, id), HttpStatus.ACCEPTED);
     }
 

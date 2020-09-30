@@ -41,7 +41,9 @@ public class BandService {
     }
 
     public List<BandDTO> read() {
-        return this.repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+        List<Band> found = this.repo.findAll();
+        List<BandDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return streamed;
     }
 
     public BandDTO read(Long id) {

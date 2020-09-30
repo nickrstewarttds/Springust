@@ -2,8 +2,6 @@ package com.qa.springust.dto;
 
 import java.util.List;
 
-import com.qa.springust.persistence.domain.Guitarist;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -22,6 +20,6 @@ public class BandDTO {
 
     private Long id;
     private String name;
-    private List<Guitarist> guitarists;
+    private List<GuitaristDTO> guitarists;
 
 }

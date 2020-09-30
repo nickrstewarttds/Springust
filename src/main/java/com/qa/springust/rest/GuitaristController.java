@@ -2,8 +2,6 @@ package com.qa.springust.rest;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,8 +68,8 @@ public class GuitaristController {
     }
 
     // update
-    @PutMapping("/update")
-    public ResponseEntity<GuitaristDTO> updateGuitaristById(@PathParam("id") Long id,
+    @PutMapping("/update/{id}")
+    public ResponseEntity<GuitaristDTO> updateGuitaristById(@PathVariable Long id,
             @RequestBody GuitaristDTO guitaristDTO) {
         return new ResponseEntity<>(this.service.update(guitaristDTO, id), HttpStatus.ACCEPTED);
     }

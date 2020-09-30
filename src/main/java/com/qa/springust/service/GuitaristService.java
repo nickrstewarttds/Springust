@@ -43,7 +43,9 @@ public class GuitaristService {
 
     // readAll
     public List<GuitaristDTO> read() {
-        return this.repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+        List<Guitarist> found = this.repo.findAll();
+        List<GuitaristDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return streamed;
     }
 
     // readById
