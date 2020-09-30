@@ -1,5 +1,6 @@
 package com.qa.springust.persistence.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -29,7 +30,7 @@ public class Band {
     private String name;
 
     @OneToMany(mappedBy = "band")
-    private List<Guitarist> guitarists;
+    private List<Guitarist> guitarists = new ArrayList<>();
 
     public Band(String name) {
         this.name = name;

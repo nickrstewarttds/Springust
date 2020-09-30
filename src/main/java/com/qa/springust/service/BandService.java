@@ -34,10 +34,16 @@ public class BandService {
         return this.mapper.map(bandDTO, Band.class);
     }
 
-    public BandDTO create(BandDTO bandDTO) {
-        Band toSave = this.mapFromDTO(bandDTO);
-        Band saved = this.repo.save(toSave);
-        return this.mapToDTO(saved);
+//    public BandDTO create(BandDTO bandDTO) {
+//        Band toSave = this.mapFromDTO(bandDTO);
+//        Band saved = this.repo.save(toSave);
+//        return this.mapToDTO(saved);
+//    }
+
+    public BandDTO create(Band band) {
+        Band created = this.repo.save(band);
+        BandDTO mapped = this.mapToDTO(created);
+        return mapped;
     }
 
     public List<BandDTO> read() {

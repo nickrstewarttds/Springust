@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qa.springust.dto.GuitaristDTO;
+import com.qa.springust.persistence.domain.Guitarist;
 import com.qa.springust.service.GuitaristService;
 
 @RestController
@@ -50,33 +51,38 @@ public class GuitaristController {
     }
 
     // create
+//    @PostMapping("/create")
+//    public ResponseEntity<GuitaristDTO> create(@RequestBody GuitaristDTO guitaristDTO) {
+//        return new ResponseEntity<>(this.service.create(guitaristDTO), HttpStatus.CREATED);
+//    }
+
     @PostMapping("/create")
-    public ResponseEntity<GuitaristDTO> create(@RequestBody GuitaristDTO guitaristDTO) {
-        return new ResponseEntity<>(this.service.create(guitaristDTO), HttpStatus.CREATED);
+    public ResponseEntity<GuitaristDTO> create(@RequestBody Guitarist guitarist) {
+        GuitaristDTO created = this.service.create(guitarist);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     // readAll
     @GetMapping("/read")
-    public ResponseEntity<List<GuitaristDTO>> getAllGuitarists() {
+    public ResponseEntity<List<GuitaristDTO>> read() {
         return ResponseEntity.ok(this.service.read());
     }
 
     // readById
     @GetMapping("/read/{id}")
-    public ResponseEntity<GuitaristDTO> getGuitaristById(@PathVariable Long id) {
+    public ResponseEntity<GuitaristDTO> read(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.read(id));
     }
 
     // update
     @PutMapping("/update/{id}")
-    public ResponseEntity<GuitaristDTO> updateGuitaristById(@PathVariable Long id,
-            @RequestBody GuitaristDTO guitaristDTO) {
+    public ResponseEntity<GuitaristDTO> update(@PathVariable Long id, @RequestBody GuitaristDTO guitaristDTO) {
         return new ResponseEntity<>(this.service.update(guitaristDTO, id), HttpStatus.ACCEPTED);
     }
 
     // delete
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<GuitaristDTO> deleteGuitaristById(@PathVariable Long id) {
+    public ResponseEntity<GuitaristDTO> delete(@PathVariable Long id) {
         // Ternary Statements (If/Else):
         //
         // return the boolean result of the delete function

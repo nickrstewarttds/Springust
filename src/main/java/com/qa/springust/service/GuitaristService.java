@@ -35,10 +35,16 @@ public class GuitaristService {
     }
 
     // create
-    public GuitaristDTO create(GuitaristDTO guitaristDTO) {
-        Guitarist toSave = this.mapFromDTO(guitaristDTO);
-        Guitarist saved = this.repo.save(toSave);
-        return this.mapToDTO(saved);
+//    public GuitaristDTO create(GuitaristDTO guitaristDTO) {
+//        Guitarist toSave = this.mapFromDTO(guitaristDTO);
+//        Guitarist saved = this.repo.save(toSave);
+//        return this.mapToDTO(saved);
+//    }
+
+    public GuitaristDTO create(Guitarist guitarist) {
+        Guitarist created = this.repo.save(guitarist);
+        GuitaristDTO mapped = this.mapToDTO(created);
+        return mapped;
     }
 
     // readAll
