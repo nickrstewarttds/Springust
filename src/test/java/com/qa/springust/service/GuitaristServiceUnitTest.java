@@ -35,6 +35,7 @@ class GuitaristServiceUnitTest {
     private List<Guitarist> guitaristList;
     private Guitarist testGuitarist;
     private Guitarist testGuitaristWithId;
+    private Guitarist emptyGuitarist;
     private GuitaristDTO guitaristDTO;
 
     final Long id = 1L;
@@ -53,6 +54,7 @@ class GuitaristServiceUnitTest {
         this.testGuitarist = new Guitarist("John Darnielle", 6, "Ibanez Talman");
         this.testGuitaristWithId = new Guitarist(testGuitarist.getName(), testGuitarist.getStrings(),
                 testGuitarist.getType());
+        this.emptyGuitarist = new Guitarist();
         this.testGuitaristWithId.setId(id);
         this.guitaristDTO = new ModelMapper().map(testGuitaristWithId, GuitaristDTO.class);
     }
@@ -134,11 +136,9 @@ class GuitaristServiceUnitTest {
 
     @Test
     void findByNameJPQLTest() {
+        emptyGuitarist.setName(testName);
 
-        Guitarist guitarist = new Guitarist(null, null, null);
-        guitarist.setName(testName);
-
-        when(this.repo.findByNameJPQL(this.testName)).thenReturn(Optional.of(guitarist));
+        when(this.repo.findByNameJPQL(this.testName)).thenReturn(Optional.of(emptyGuitarist));
 
         when(this.modelMapper.map(testGuitaristWithId, GuitaristDTO.class)).thenReturn(guitaristDTO);
 
@@ -149,10 +149,9 @@ class GuitaristServiceUnitTest {
 
     @Test
     void findByStringsJPQLTest() {
-        Guitarist guitarist = new Guitarist(null, null, null);
-        guitarist.setStrings(testStrings);
+        emptyGuitarist.setStrings(testStrings);
 
-        when(this.repo.findByStringsJPQL(this.testStrings)).thenReturn(Optional.of(guitarist));
+        when(this.repo.findByStringsJPQL(this.testStrings)).thenReturn(Optional.of(emptyGuitarist));
 
         when(this.modelMapper.map(testGuitaristWithId, GuitaristDTO.class)).thenReturn(guitaristDTO);
 
@@ -163,10 +162,9 @@ class GuitaristServiceUnitTest {
 
     @Test
     void findByTypeJPQLTest() {
-        Guitarist guitarist = new Guitarist(null, null, null);
-        guitarist.setType(testType);
+        emptyGuitarist.setType(testType);
 
-        when(this.repo.findByTypeJPQL(this.testType)).thenReturn(Optional.of(guitarist));
+        when(this.repo.findByTypeJPQL(this.testType)).thenReturn(Optional.of(emptyGuitarist));
 
         when(this.modelMapper.map(testGuitaristWithId, GuitaristDTO.class)).thenReturn(guitaristDTO);
 
