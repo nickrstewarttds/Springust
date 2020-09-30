@@ -2,8 +2,11 @@ package com.qa.springust.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -12,10 +15,7 @@ import com.qa.springust.persistence.domain.Guitarist;
 @DataJpaTest
 class GuitaristRepositoryTest {
 
-    // you'll only need to test your repository if you've written custom repository
-    // methods
-    // though i'm not using them here, i'll show you how to test three hidden
-    // methods as proof-of-concept
+    // you'll only need to test your repo if you've written custom methods
 
     @Autowired
     private GuitaristRepository repo;
@@ -26,26 +26,29 @@ class GuitaristRepositoryTest {
 
     private final Guitarist TEST_GUITARIST = new Guitarist(TEST_NAME, TEST_STRINGS, TEST_TYPE);
 
-    private Guitarist testSavedGuitarist;
+    private List<Guitarist> results;
 
     @BeforeEach
     void init() {
         this.repo.deleteAll();
-        this.testSavedGuitarist = this.repo.save(this.TEST_GUITARIST);
+        this.results = new ArrayList<>();
     }
 
     @Test
-    void testFindByNameJPQL() {
-        assertThat(this.repo.findByNameJPQL(this.testSavedGuitarist.getName())).isEqualTo(TEST_NAME);
+    void testFindByNameJPQL() throws Exception {
+        this.results.add(TEST_GUITARIST);
+        assertThat(this.repo.findByNameJPQL(TEST_GUITARIST.getName())).isEqualTo(results);
     }
 
     @Test
-    void testFindByStringsJPQL() {
-        assertThat(this.repo.findByStringsJPQL(this.testSavedGuitarist.getStrings())).isEqualTo(TEST_STRINGS);
+    void testFindByStringsJPQL() throws Exception {
+        this.results.add(TEST_GUITARIST);
+        assertThat(this.repo.findByStringsJPQL(TEST_GUITARIST.getStrings())).isEqualTo(results);
     }
 
     @Test
-    void testFindByTypeJPQL() {
-        assertThat(this.repo.findByTypeJPQL(this.testSavedGuitarist.getType())).isEqualTo(TEST_TYPE);
+    public void testFindByTypeJPQL() throws Exception {
+        this.results.add(TEST_GUITARIST);
+        assertThat(this.repo.findByTypeJPQL(TEST_GUITARIST.getType())).isEqualTo(results);
     }
 }
