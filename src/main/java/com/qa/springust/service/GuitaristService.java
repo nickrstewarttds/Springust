@@ -1,6 +1,7 @@
 package com.qa.springust.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -30,9 +31,9 @@ public class GuitaristService {
         return this.mapper.map(guitarist, GuitaristDTO.class);
     }
 
-    private Guitarist mapFromDTO(GuitaristDTO guitaristDTO) {
-        return this.mapper.map(guitaristDTO, Guitarist.class);
-    }
+//    private Guitarist mapFromDTO(GuitaristDTO guitaristDTO) {
+//        return this.mapper.map(guitaristDTO, Guitarist.class);
+//    }
 
     // create
 //    public GuitaristDTO create(GuitaristDTO guitaristDTO) {
@@ -74,6 +75,24 @@ public class GuitaristService {
         }
         this.repo.deleteById(id);
         return !this.repo.existsById(id);
+    }
+
+    public List<GuitaristDTO> findByNameJPQL(String name) {
+        Optional<Guitarist> found = this.repo.findByNameJPQL(name);
+        List<GuitaristDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return streamed;
+    }
+
+    public List<GuitaristDTO> findByStringsJPQL(Integer strings) {
+        Optional<Guitarist> found = this.repo.findByStringsJPQL(strings);
+        List<GuitaristDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return streamed;
+    }
+
+    public List<GuitaristDTO> findByTypeJPQL(String type) {
+        Optional<Guitarist> found = this.repo.findByTypeJPQL(type);
+        List<GuitaristDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return streamed;
     }
 
 }

@@ -91,4 +91,19 @@ public class GuitaristController {
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 
+    @GetMapping("/searchName/{name}")
+    public ResponseEntity<List<GuitaristDTO>> findByNameJPQL(@PathVariable String name) {
+        return ResponseEntity.ok(this.service.findByNameJPQL(name));
+    }
+
+    @GetMapping("/searchStrings/{strings}")
+    public ResponseEntity<List<GuitaristDTO>> findByStringsJPQL(@PathVariable Integer strings) {
+        return ResponseEntity.ok(this.service.findByStringsJPQL(strings));
+    }
+
+    @GetMapping("/searchType/{type}")
+    public ResponseEntity<List<GuitaristDTO>> findByTypeJPQL(@PathVariable String type) {
+        return ResponseEntity.ok(this.service.findByTypeJPQL(type));
+    }
+
 }
