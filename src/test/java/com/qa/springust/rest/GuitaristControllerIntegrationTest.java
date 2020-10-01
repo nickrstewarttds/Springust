@@ -32,15 +32,25 @@ public class GuitaristControllerIntegrationTest {
     // they'll 'just work', so we don't need to worry about them
     // all we're testing is how our controller integrates with the rest of the API
 
+    // mockito's request-making backend
+    // you only need this in integration testing - no mocked service required!
+    // this acts as postman would, across your whole application
     @Autowired
     private MockMvc mock;
 
+    // i'm reusing my normal repo to ping different things to for testing purposes
+    // this is only used for my <expected> objects, not <actual> ones!
     @Autowired
     private GuitaristRepository repo;
 
+    // this specifically maps POJOs for us, in our case to JSON
+    // slightly different from ObjectMapper because we built it ourselves (and use
+    // it exclusively on our <expected> objects
     @Autowired
     private ModelMapper modelMapper;
 
+    // this specifically maps objects to JSON format for us
+    // slightly different from ModelMapper because this is bundled with mockito
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -48,10 +58,7 @@ public class GuitaristControllerIntegrationTest {
     private Guitarist testGuitaristWithId;
     private GuitaristDTO guitaristDTO;
 
-    private Long id;
-    private String testName;
-    private Integer testStrings;
-    private String testType;
+    private final Long id = 1L;
 
     private GuitaristDTO mapToDTO(Guitarist guitarist) {
         return this.modelMapper.map(guitarist, GuitaristDTO.class);
@@ -64,21 +71,16 @@ public class GuitaristControllerIntegrationTest {
         this.testGuitarist = new Guitarist("John Darnielle", 6, "Ibanez Talman");
         this.testGuitaristWithId = this.repo.save(this.testGuitarist);
         this.guitaristDTO = this.mapToDTO(testGuitaristWithId);
-
-        this.id = this.testGuitaristWithId.getId();
-        this.testName = this.testGuitaristWithId.getName();
-        this.testStrings = this.testGuitaristWithId.getStrings();
-        this.testType = this.testGuitaristWithId.getType();
     }
 
     @Test
     void testCreate() throws Exception {
         this.mock
                 .perform(request(HttpMethod.POST, "/guitarist/create").contentType(MediaType.APPLICATION_JSON)
-                        .content(this.objectMapper.writeValueAsString(testGuitarist))
+                        .content(this.objectMapper.writeValueAsString(this.testGuitarist))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(content().json(this.objectMapper.writeValueAsString(guitaristDTO)));
+                .andExpect(content().json(this.objectMapper.writeValueAsString(this.guitaristDTO)));
     }
 
     @Test
@@ -92,12 +94,13 @@ public class GuitaristControllerIntegrationTest {
     void testReadAll() throws Exception {
         List<GuitaristDTO> guitaristList = new ArrayList<>();
         guitaristList.add(this.guitaristDTO);
+        String expected = this.objectMapper.writeValueAsString(guitaristList);
+        // expected = { { "name": "Nick", ... } , { "name": "Cris", ... } }
 
-        String content = this.mock
-                .perform(request(HttpMethod.GET, "/guitarist/read").accept(MediaType.APPLICATION_JSON))
+        String actual = this.mock.perform(request(HttpMethod.GET, "/guitarist/read").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-        assertEquals(this.objectMapper.writeValueAsString(guitaristList), content);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -106,58 +109,19 @@ public class GuitaristControllerIntegrationTest {
         Guitarist updatedGuitarist = new Guitarist(newGuitarist.getName(), newGuitarist.getStrings(),
                 newGuitarist.getType());
         updatedGuitarist.setId(this.id);
+        String expected = this.objectMapper.writeValueAsString(this.mapToDTO(updatedGuitarist));
 
-        String result = this.mock
-                .perform(request(HttpMethod.PUT, "/guitarist/update/" + this.id).accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.objectMapper.writeValueAsString(newGuitarist)))
-                .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString();
+        String actual = this.mock.perform(request(HttpMethod.PUT, "/guitarist/update/" + this.id) // localhost:8901/guitarist/update/1
+                .contentType(MediaType.APPLICATION_JSON).content(this.objectMapper.writeValueAsString(newGuitarist))
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isAccepted()) // 201
+                .andReturn().getResponse().getContentAsString();
 
-        assertEquals(this.objectMapper.writeValueAsString(this.mapToDTO(updatedGuitarist)), result);
+        assertEquals(expected, actual);
     }
 
     @Test
     void testDelete() throws Exception {
         this.mock.perform(request(HttpMethod.DELETE, "/guitarist/delete/" + this.id)).andExpect(status().isNoContent());
-    }
-
-    @Test
-    void testfindByNameJPQL() throws Exception {
-        List<GuitaristDTO> guitaristList = new ArrayList<>();
-        guitaristList.add(this.guitaristDTO);
-
-        String content = this.mock
-                .perform(request(HttpMethod.GET, "/guitarist/searchName/" + this.testName)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        assertEquals(this.objectMapper.writeValueAsString(guitaristList), content);
-    }
-
-    @Test
-    void testfindByStringsJPQL() throws Exception {
-        List<GuitaristDTO> guitaristList = new ArrayList<>();
-        guitaristList.add(this.guitaristDTO);
-
-        String content = this.mock
-                .perform(request(HttpMethod.GET, "/guitarist/searchStrings/" + this.testStrings)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        assertEquals(this.objectMapper.writeValueAsString(guitaristList), content);
-    }
-
-    @Test
-    void testfindByTypeJPQL() throws Exception {
-        List<GuitaristDTO> guitaristList = new ArrayList<>();
-        guitaristList.add(this.guitaristDTO);
-
-        String content = this.mock
-                .perform(request(HttpMethod.GET, "/guitarist/searchType/" + this.testType)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        assertEquals(this.objectMapper.writeValueAsString(guitaristList), content);
     }
 
 }

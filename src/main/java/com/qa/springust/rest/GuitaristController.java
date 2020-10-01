@@ -22,39 +22,13 @@ import com.qa.springust.service.GuitaristService;
 @RequestMapping("/guitarist")
 public class GuitaristController {
 
-    // Re - Representational
-    // S - State
-    // T - Transfer
-
-    // @Autowired
-    // Field Autowiring:
-    //
-    // Spring reflects in a setter method which we can't see (e.g. setService() )
-    // this is run AFTER our Controller gets created
-    // if the setter method fails, we end up with a Controller that isn't wired up
-    // to the Service
-    // which will cause exceptions later on!
     private GuitaristService service;
 
-    // Constructor Autowiring:
-    //
-    // Spring wires the Controller up to the Service at the moment the Controller is
-    // created,
-    // so, if the autowiring fails, then our Controller object never gets created!
-    // This causes fewer exceptions - if we want to make sure our autowiring has
-    // worked,
-    // all we need to do is check if the Controller exists!
     @Autowired
     public GuitaristController(GuitaristService service) {
         super();
         this.service = service;
     }
-
-    // create
-//    @PostMapping("/create")
-//    public ResponseEntity<GuitaristDTO> create(@RequestBody GuitaristDTO guitaristDTO) {
-//        return new ResponseEntity<>(this.service.create(guitaristDTO), HttpStatus.CREATED);
-//    }
 
     @PostMapping("/create")
     public ResponseEntity<GuitaristDTO> create(@RequestBody Guitarist guitarist) {
@@ -62,48 +36,25 @@ public class GuitaristController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    // readAll
-    @GetMapping("/read")
-    public ResponseEntity<List<GuitaristDTO>> read() {
-        return ResponseEntity.ok(this.service.read());
-    }
-
-    // readById
     @GetMapping("/read/{id}")
     public ResponseEntity<GuitaristDTO> read(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.read(id));
     }
 
-    // update
+    @GetMapping("/read")
+    public ResponseEntity<List<GuitaristDTO>> read() {
+        return ResponseEntity.ok(this.service.read());
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<GuitaristDTO> update(@PathVariable Long id, @RequestBody GuitaristDTO guitaristDTO) {
         return new ResponseEntity<>(this.service.update(guitaristDTO, id), HttpStatus.ACCEPTED);
     }
 
-    // delete
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<GuitaristDTO> delete(@PathVariable Long id) {
-        // Ternary Statements (If/Else):
-        //
-        // return the boolean result of the delete function
-        // UNLESS the HTTP status returned is 204, in which case throw HTTP status 500
         return this.service.delete(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) // 204
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
-    }
-
-    @GetMapping("/searchName/{name}")
-    public ResponseEntity<List<GuitaristDTO>> findByNameJPQL(@PathVariable String name) {
-        return ResponseEntity.ok(this.service.findByNameJPQL(name));
-    }
-
-    @GetMapping("/searchStrings/{strings}")
-    public ResponseEntity<List<GuitaristDTO>> findByStringsJPQL(@PathVariable Integer strings) {
-        return ResponseEntity.ok(this.service.findByStringsJPQL(strings));
-    }
-
-    @GetMapping("/searchType/{type}")
-    public ResponseEntity<List<GuitaristDTO>> findByTypeJPQL(@PathVariable String type) {
-        return ResponseEntity.ok(this.service.findByTypeJPQL(type));
     }
 
 }

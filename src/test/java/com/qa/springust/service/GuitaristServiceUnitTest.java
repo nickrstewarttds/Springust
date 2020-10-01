@@ -134,43 +134,4 @@ class GuitaristServiceUnitTest {
         verify(this.repo, times(2)).existsById(id);
     }
 
-    @Test
-    void findByNameJPQLTest() {
-        emptyGuitarist.setName(testName);
-
-        when(this.repo.findByNameJPQL(this.testName)).thenReturn(Optional.of(emptyGuitarist));
-
-        when(this.modelMapper.map(testGuitaristWithId, GuitaristDTO.class)).thenReturn(guitaristDTO);
-
-        assertThat(this.service.findByNameJPQL(this.testName).isEmpty()).isFalse();
-
-        verify(this.repo, times(1)).findByNameJPQL(this.testName);
-    }
-
-    @Test
-    void findByStringsJPQLTest() {
-        emptyGuitarist.setStrings(testStrings);
-
-        when(this.repo.findByStringsJPQL(this.testStrings)).thenReturn(Optional.of(emptyGuitarist));
-
-        when(this.modelMapper.map(testGuitaristWithId, GuitaristDTO.class)).thenReturn(guitaristDTO);
-
-        assertThat(this.service.findByStringsJPQL(this.testStrings).isEmpty()).isFalse();
-
-        verify(this.repo, times(1)).findByStringsJPQL(this.testStrings);
-    }
-
-    @Test
-    void findByTypeJPQLTest() {
-        emptyGuitarist.setType(testType);
-
-        when(this.repo.findByTypeJPQL(this.testType)).thenReturn(Optional.of(emptyGuitarist));
-
-        when(this.modelMapper.map(testGuitaristWithId, GuitaristDTO.class)).thenReturn(guitaristDTO);
-
-        assertThat(this.service.findByTypeJPQL(this.testType).isEmpty()).isFalse();
-
-        verify(this.repo, times(1)).findByTypeJPQL(this.testType);
-    }
-
 }
