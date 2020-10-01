@@ -58,7 +58,7 @@ public class GuitaristControllerIntegrationTest {
     private Guitarist testGuitaristWithId;
     private GuitaristDTO guitaristDTO;
 
-    private final Long id = 1L;
+    private Long id;
 
     private GuitaristDTO mapToDTO(Guitarist guitarist) {
         return this.modelMapper.map(guitarist, GuitaristDTO.class);
@@ -70,7 +70,8 @@ public class GuitaristControllerIntegrationTest {
 
         this.testGuitarist = new Guitarist("John Darnielle", 6, "Ibanez Talman");
         this.testGuitaristWithId = this.repo.save(this.testGuitarist);
-        this.guitaristDTO = this.mapToDTO(testGuitaristWithId);
+        this.guitaristDTO = this.mapToDTO(this.testGuitaristWithId);
+        this.id = this.testGuitaristWithId.getId();
     }
 
     @Test
