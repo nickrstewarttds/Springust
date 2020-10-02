@@ -32,7 +32,7 @@ public class GuitaristControllerIntegrationTest {
     // they'll 'just work', so we don't need to worry about them
     // all we're testing is how our controller integrates with the rest of the API
 
-    // mockito's request-making backend
+    // mockito's request-making backend - acting as our controller
     // you only need this in integration testing - no mocked service required!
     // this acts as postman would, across your whole application
     @Autowired
@@ -49,6 +49,10 @@ public class GuitaristControllerIntegrationTest {
     @Autowired
     private ModelMapper modelMapper;
 
+    private GuitaristDTO mapToDTO(Guitarist guitarist) {
+        return this.modelMapper.map(guitarist, GuitaristDTO.class);
+    }
+
     // this specifically maps objects to JSON format for us
     // slightly different from ModelMapper because this is bundled with mockito
     @Autowired
@@ -59,10 +63,6 @@ public class GuitaristControllerIntegrationTest {
     private GuitaristDTO guitaristDTO;
 
     private Long id;
-
-    private GuitaristDTO mapToDTO(Guitarist guitarist) {
-        return this.modelMapper.map(guitarist, GuitaristDTO.class);
-    }
 
     @BeforeEach
     void init() {

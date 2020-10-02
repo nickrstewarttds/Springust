@@ -50,10 +50,11 @@ class GuitaristControllerUnitTest {
     private Guitarist testGuitaristWithId;
     private GuitaristDTO guitaristDTO;
 
+    private final Long id = 1L;
     private final String name = "John Darnielle";
     private final Integer strings = 6;
     private final String type = "Ibanez Talman";
-    private final Long id = 1L;
+    
 
     @BeforeEach
     void init() {
@@ -87,7 +88,8 @@ class GuitaristControllerUnitTest {
 
     @Test
     void readTest() {
-        when(this.service.read(this.id)).thenReturn(this.guitaristDTO);
+        when(this.service.read(this.id))
+            .thenReturn(this.guitaristDTO);
 
         GuitaristDTO testReadOne = this.guitaristDTO;
         assertThat(new ResponseEntity<GuitaristDTO>(testReadOne, HttpStatus.OK))
