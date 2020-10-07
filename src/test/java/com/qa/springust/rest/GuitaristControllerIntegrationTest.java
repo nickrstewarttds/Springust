@@ -1,11 +1,9 @@
 package com.qa.springust.rest;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,11 +12,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -47,26 +43,15 @@ public class GuitaristControllerIntegrationTest {
     @Autowired
     private GuitaristRepository repo;
 
-    // this specifically maps POJOs for us, in our case to JSON
-    // slightly different from ObjectMapper because we built it ourselves (and use
-    // it exclusively on our <expected> objects
-    @Autowired
-    private ModelMapper modelMapper;
-
-    private GuitaristDTO mapToDTO(Guitarist guitarist) {
-        return this.modelMapper.map(guitarist, GuitaristDTO.class);
-    }
-
     // this specifically maps objects to JSON format for us
     // slightly different from ModelMapper because this is bundled with mockito
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper jsonifier;
 
+    private Long id;
     private Guitarist testGuitarist;
     private Guitarist testGuitaristWithId;
     private GuitaristDTO guitaristDTO;
-
-    private Long id;
 
     @BeforeEach
     void init() {
@@ -74,26 +59,27 @@ public class GuitaristControllerIntegrationTest {
 
         this.testGuitarist = new Guitarist("John Darnielle", 6, "Guitar");
         this.testGuitaristWithId = this.repo.save(this.testGuitarist);
-        this.guitaristDTO = this.mapToDTO(this.testGuitaristWithId);
         this.id = this.testGuitaristWithId.getId();
+        this.guitaristDTO = new GuitaristDTO(this.id, testGuitarist.getName(), testGuitarist.getStrings(), testGuitarist.getType());
     }
 
     @Test
     void testCreate() throws Exception {
         this.mvc.perform(post("/guitarist/create")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(this.testGuitarist))
-                .accept(MediaType.APPLICATION_JSON))
+                .content(this.jsonifier.writeValueAsString(this.testGuitarist)))
             .andExpect(status().isCreated())
-            .andExpect(content().json(this.objectMapper.writeValueAsString(this.guitaristDTO)));
+            .andExpect(content().json(this.jsonifier.writeValueAsString(this.guitaristDTO)));
     }
 
     @Test
     void testReadOne() throws Exception {
         this.mvc.perform(get("/guitarist/read/" + this.id)
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(this.objectMapper.writeValueAsString(this.guitaristDTO)));
+            .andExpect(content().json(this.jsonifier.writeValueAsString(this.guitaristDTO)));
     }
 
     @Test
@@ -102,21 +88,22 @@ public class GuitaristControllerIntegrationTest {
         GUITARISTS.add(this.guitaristDTO);
         
         this.mvc.perform(get("/guitarist/read")
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(this.objectMapper.writeValueAsString(GUITARISTS)));
+            .andExpect(content().json(this.jsonifier.writeValueAsString(GUITARISTS)));
     }
 
     @Test
     void testUpdate() throws Exception {
-        final GuitaristDTO BASS_DTO = new GuitaristDTO(this.id, "PPH", 4, "Bass");
+        final GuitaristDTO NEW_GUITARIST_DTO = new GuitaristDTO(this.id, "PPH", 4, "Bass");
         
         this.mvc.perform(put("/guitarist/update/" + this.id)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(BASS_DTO))
-                .accept(MediaType.APPLICATION_JSON))
+                .content(this.jsonifier.writeValueAsString(NEW_GUITARIST_DTO)))
             .andExpect(status().isAccepted())
-            .andExpect(content().json(this.objectMapper.writeValueAsString(BASS_DTO)));
+            .andExpect(content().json(this.jsonifier.writeValueAsString(NEW_GUITARIST_DTO)));
         
     }
 
@@ -124,7 +111,8 @@ public class GuitaristControllerIntegrationTest {
     void testDelete() throws Exception {
         this.mvc.perform(delete("/guitarist/delete/" + this.id)
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.jsonifier.writeValueAsString(this.testGuitarist)))
             .andExpect(status().isNoContent());
     }
 
