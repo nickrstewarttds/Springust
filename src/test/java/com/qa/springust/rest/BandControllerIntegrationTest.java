@@ -27,6 +27,8 @@ import com.qa.springust.persistence.repository.BandRepository;
 @AutoConfigureMockMvc
 class BandControllerIntegrationTest {
 
+    private static final MediaType jsonFormat = MediaType.APPLICATION_JSON;
+
     @Autowired
     private MockMvc mvc;
 
@@ -52,16 +54,21 @@ class BandControllerIntegrationTest {
 
     @Test
     void testCreate() throws Exception {
-        this.mvc.perform(post("/band/create").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-                .content(this.jsonifier.writeValueAsString(this.testBand))).andExpect(status().isCreated())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(this.bandDTO)));
+        this.mvc.perform(post("/band/create")
+                .accept(jsonFormat)
+                .contentType(jsonFormat)
+                .content(this.jsonifier.writeValueAsString(this.testBand)))
+            .andExpect(status().isCreated())
+            .andExpect(content().json(this.jsonifier.writeValueAsString(this.bandDTO)));
     }
 
     @Test
     void testReadOne() throws Exception {
-        this.mvc.perform(
-                get("/band/read/" + this.id).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().json(this.jsonifier.writeValueAsString(this.bandDTO)));
+        this.mvc.perform(get("/band/read/" + this.id)
+                .accept(jsonFormat)
+                .contentType(jsonFormat))
+            .andExpect(status().isOk())
+            .andExpect(content().json(this.jsonifier.writeValueAsString(this.bandDTO)));
     }
 
     @Test
@@ -69,25 +76,33 @@ class BandControllerIntegrationTest {
         final List<Band> BANDS = new ArrayList<>();
         BANDS.add(this.testBandWithId);
 
-        this.mvc.perform(get("/band/read").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().json(this.jsonifier.writeValueAsString(BANDS)));
+        this.mvc.perform(get("/band/read")
+                .accept(jsonFormat)
+                .contentType(jsonFormat))
+            .andExpect(status().isOk())
+            .andExpect(content().json(this.jsonifier.writeValueAsString(BANDS)));
     }
 
     @Test
     void testUpdate() throws Exception {
         final BandDTO NEW_BAND_DTO = new BandDTO(this.id, "The Extra Glenns", new ArrayList<>());
-
-        this.mvc.perform(put("/band/update/" + this.id).accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON).content(this.jsonifier.writeValueAsString(NEW_BAND_DTO)))
-                .andExpect(status().isAccepted())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(NEW_BAND_DTO)));
+        
+        this.mvc.perform(put("/band/update/" + this.id)
+                .accept(jsonFormat)
+                .contentType(jsonFormat)
+                .content(this.jsonifier.writeValueAsString(NEW_BAND_DTO)))
+            .andExpect(status().isAccepted())
+            .andExpect(content().json(this.jsonifier.writeValueAsString(NEW_BAND_DTO)));
     }
-
+    
     @Test
     void testDelete() throws Exception {
-        this.mvc.perform(delete("/band/delete/" + this.id).accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON).content(this.jsonifier.writeValueAsString(this.testBand)))
-                .andExpect(status().isNoContent());
+        this.mvc
+            .perform(delete("/band/delete/" + this.id)
+                    .accept(jsonFormat)
+                    .contentType(jsonFormat)
+                    .content(this.jsonifier.writeValueAsString(this.testBand)))
+            .andExpect(status().isNoContent());
     }
 
 }

@@ -32,6 +32,8 @@ public class GuitaristControllerIntegrationTest {
     // they'll 'just work', so we don't need to worry about them
     // all we're testing is how our controller integrates with the rest of the API
 
+    private static final MediaType jsonFormat = MediaType.APPLICATION_JSON;
+
     // mockito's request-making backend - acting as our controller
     // you only need this in integration testing - no mocked service required!
     // this acts as postman would, across your whole application
@@ -66,8 +68,8 @@ public class GuitaristControllerIntegrationTest {
     @Test
     void testCreate() throws Exception {
         this.mvc.perform(post("/guitarist/create")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
+                .accept(jsonFormat)
+                .contentType(jsonFormat)
                 .content(this.jsonifier.writeValueAsString(this.testGuitarist)))
             .andExpect(status().isCreated())
             .andExpect(content().json(this.jsonifier.writeValueAsString(this.guitaristDTO)));
@@ -76,8 +78,8 @@ public class GuitaristControllerIntegrationTest {
     @Test
     void testReadOne() throws Exception {
         this.mvc.perform(get("/guitarist/read/" + this.id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+                .accept(jsonFormat)
+                .contentType(jsonFormat))
             .andExpect(status().isOk())
             .andExpect(content().json(this.jsonifier.writeValueAsString(this.guitaristDTO)));
     }
@@ -88,8 +90,8 @@ public class GuitaristControllerIntegrationTest {
         GUITARISTS.add(this.guitaristDTO);
         
         this.mvc.perform(get("/guitarist/read")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+                .accept(jsonFormat)
+                .contentType(jsonFormat))
             .andExpect(status().isOk())
             .andExpect(content().json(this.jsonifier.writeValueAsString(GUITARISTS)));
     }
@@ -99,8 +101,8 @@ public class GuitaristControllerIntegrationTest {
         final GuitaristDTO NEW_GUITARIST_DTO = new GuitaristDTO(this.id, "PPH", 4, "Bass");
         
         this.mvc.perform(put("/guitarist/update/" + this.id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
+                .accept(jsonFormat)
+                .contentType(jsonFormat)
                 .content(this.jsonifier.writeValueAsString(NEW_GUITARIST_DTO)))
             .andExpect(status().isAccepted())
             .andExpect(content().json(this.jsonifier.writeValueAsString(NEW_GUITARIST_DTO)));
@@ -110,8 +112,8 @@ public class GuitaristControllerIntegrationTest {
     @Test
     void testDelete() throws Exception {
         this.mvc.perform(delete("/guitarist/delete/" + this.id)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
+                .accept(jsonFormat)
+                .contentType(jsonFormat)
                 .content(this.jsonifier.writeValueAsString(this.testGuitarist)))
             .andExpect(status().isNoContent());
     }
