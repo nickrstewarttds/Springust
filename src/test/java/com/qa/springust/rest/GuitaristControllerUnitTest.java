@@ -54,7 +54,6 @@ class GuitaristControllerUnitTest {
     private final String name = "John Darnielle";
     private final Integer strings = 6;
     private final String type = "Ibanez Talman";
-    
 
     @BeforeEach
     void init() {
@@ -71,28 +70,25 @@ class GuitaristControllerUnitTest {
     void createTest() {
         // set up what the mock is doing
         // when running some method, return some value we've predefined up there ^
-        when(this.service.create(testGuitarist)).thenReturn(this.guitaristDTO);
+        when(this.service.create(this.testGuitarist)).thenReturn(this.guitaristDTO);
 
         // these are the same thing:
         // JUNIT: assertEquals(expected, actual)
         // MOCKITO: assertThat(expected).isEqualTo(actual);
         // .isEqualTo(what is the method actually returning?)
         // assertThat(what do we want to compare the method to?)
-        GuitaristDTO testCreated = this.guitaristDTO;
-        assertThat(new ResponseEntity<GuitaristDTO>(testCreated, HttpStatus.CREATED))
-                .isEqualTo(this.controller.create(testGuitarist));
+        assertThat(new ResponseEntity<GuitaristDTO>(this.guitaristDTO, HttpStatus.CREATED))
+                .isEqualTo(this.controller.create(this.testGuitarist));
 
         // check that the mocked method we ran our assertion on ... actually ran!
         verify(this.service, times(1)).create(this.testGuitarist);
     }
 
     @Test
-    void readTest() {
-        when(this.service.read(this.id))
-            .thenReturn(this.guitaristDTO);
+    void readOneTest() {
+        when(this.service.read(this.id)).thenReturn(this.guitaristDTO);
 
-        GuitaristDTO testReadOne = this.guitaristDTO;
-        assertThat(new ResponseEntity<GuitaristDTO>(testReadOne, HttpStatus.OK))
+        assertThat(new ResponseEntity<GuitaristDTO>(this.guitaristDTO, HttpStatus.OK))
                 .isEqualTo(this.controller.read(this.id));
 
         verify(this.service, times(1)).read(this.id);
@@ -118,29 +114,29 @@ class GuitaristControllerUnitTest {
         // we need to feed the mocked service some updated data values
         // that way we can test if our 6-string guitarist changes to a 4-string
         // 'guitarist'
-        GuitaristDTO newGuitarist = new GuitaristDTO(null, "Peter Peter Hughes", 4, "Fender American");
-        GuitaristDTO newGuitaristWithId = new GuitaristDTO(this.id, newGuitarist.getName(), newGuitarist.getStrings(),
-                newGuitarist.getType());
+        GuitaristDTO oldGuitarist = new GuitaristDTO(null, "PPH", 4, "Bass");
+        GuitaristDTO newGuitarist = new GuitaristDTO(this.id, oldGuitarist.getName(), oldGuitarist.getStrings(),
+                oldGuitarist.getType());
 
         // feed the mock service the values we made up here ^
-        when(this.service.update(newGuitarist, this.id)).thenReturn(newGuitaristWithId);
+        when(this.service.update(oldGuitarist, this.id)).thenReturn(newGuitarist);
 
-        assertThat(new ResponseEntity<GuitaristDTO>(newGuitaristWithId, HttpStatus.ACCEPTED))
-                .isEqualTo(this.controller.update(this.id, newGuitarist));
+        assertThat(new ResponseEntity<GuitaristDTO>(newGuitarist, HttpStatus.ACCEPTED))
+                .isEqualTo(this.controller.update(this.id, oldGuitarist));
 
-        verify(this.service, times(1)).update(newGuitarist, this.id);
+        verify(this.service, times(1)).update(oldGuitarist, this.id);
     }
 
     // controller -> service
     @Test
     void deleteTest() {
-        this.controller.delete(id); // this will ping the service, which is mocked!
+        this.controller.delete(this.id); // this will ping the service, which is mocked!
 
         // if the delete function ran, then it pinged the service successfully
         // since our service is a mocked one, we don't need to test anything in it
         // therefore: check if the controller delete function runs
         // if it does, then the test passes
-        verify(this.service, times(1)).delete(id);
+        verify(this.service, times(1)).delete(this.id);
     }
 
 }
