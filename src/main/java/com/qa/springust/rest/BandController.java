@@ -30,11 +30,6 @@ public class BandController {
         this.service = service;
     }
 
-//    @PostMapping("/create")
-//    public ResponseEntity<BandDTO> create(@RequestBody BandDTO bandDTO) {
-//        return new ResponseEntity<>(this.service.create(bandDTO), HttpStatus.CREATED);
-//    }
-
     @PostMapping("/create")
     public ResponseEntity<BandDTO> create(@RequestBody Band band) {
         BandDTO created = this.service.create(band);
@@ -61,4 +56,15 @@ public class BandController {
         return this.service.delete(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("/readBy/{name}")
+    public ResponseEntity<List<BandDTO>> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(this.service.findByName(name));
+    }
+
+    @GetMapping("/read/names")
+    public ResponseEntity<List<BandDTO>> orderByName() {
+        return ResponseEntity.ok(this.service.orderByNameAZ());
+    }
+
 }

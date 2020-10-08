@@ -57,4 +57,34 @@ public class GuitaristController {
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 
+    @GetMapping("/readBy/{name}")
+    public ResponseEntity<List<GuitaristDTO>> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(this.service.findByName(name));
+    }
+
+    @GetMapping("/readBy/{strings}")
+    public ResponseEntity<List<GuitaristDTO>> findByStrings(@PathVariable Integer strings) {
+        return ResponseEntity.ok(this.service.findByStrings(strings));
+    }
+
+    @GetMapping("/readBy/{type}")
+    public ResponseEntity<List<GuitaristDTO>> findByType(@PathVariable String type) {
+        return ResponseEntity.ok(this.service.findByType(type));
+    }
+
+    @GetMapping("/read/names")
+    public ResponseEntity<List<GuitaristDTO>> orderByName() {
+        return ResponseEntity.ok(this.service.orderByNameAZ());
+    }
+
+    @GetMapping("/read/strings")
+    public ResponseEntity<List<GuitaristDTO>> orderByStrings() {
+        return ResponseEntity.ok(this.service.orderByStringsAsc());
+    }
+
+    @GetMapping("/read/types")
+    public ResponseEntity<List<GuitaristDTO>> orderByType() {
+        return ResponseEntity.ok(this.service.orderByTypeAZ());
+    }
+
 }

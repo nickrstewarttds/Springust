@@ -145,17 +145,9 @@ class GuitaristServiceUnitTest {
 
     @Test
     void deleteTest() {
-        // we're running this.repo.existsById(id) twice, hence two returns (true &
-        // false)
-        // the <true> and <false> get plugged in once each to our two verify() methods
         when(this.repo.existsById(this.id)).thenReturn(true, false);
-
         assertThat(this.service.delete(this.id)).isTrue();
-
-        // this plugs in the <true> from our when().thenReturn()
         verify(this.repo, atLeastOnce()).deleteById(this.id);
-
-        // this plugs in the <false> from our when().thenReturn()
         verify(this.repo, atLeastOnce()).existsById(this.id);
     }
 

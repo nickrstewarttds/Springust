@@ -30,14 +30,8 @@ public class BandService {
         return this.mapper.map(band, BandDTO.class);
     }
 
-    private Band mapFromDTO(BandDTO bandDTO) {
-        return this.mapper.map(bandDTO, Band.class);
-    }
-
-//    public BandDTO create(BandDTO bandDTO) {
-//        Band toSave = this.mapFromDTO(bandDTO);
-//        Band saved = this.repo.save(toSave);
-//        return this.mapToDTO(saved);
+//    private Band mapFromDTO(BandDTO bandDTO) {
+//        return this.mapper.map(bandDTO, Band.class);
 //    }
 
     public BandDTO create(Band band) {
@@ -47,14 +41,11 @@ public class BandService {
     }
 
     public List<BandDTO> read() {
-        List<Band> found = this.repo.findAll();
-        List<BandDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
-        return streamed;
+        return this.repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public BandDTO read(Long id) {
-        Band found = this.repo.findById(id).orElseThrow(BandNotFoundException::new);
-        return this.mapToDTO(found);
+        return this.mapToDTO(this.repo.findById(id).orElseThrow(BandNotFoundException::new));
     }
 
     public BandDTO update(BandDTO bandDTO, Long id) {
@@ -67,9 +58,18 @@ public class BandService {
     public boolean delete(Long id) {
         if (!this.repo.existsById(id)) {
             throw new BandNotFoundException();
+        } else {
+            this.repo.deleteById(id);
         }
-        this.repo.deleteById(id);
         return !this.repo.existsById(id);
+    }
+
+    public List<BandDTO> findByName(String name) {
+        return this.repo.findByName(name).stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<BandDTO> orderByNameAZ() {
+        return this.repo.orderByNameAZ().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
 }

@@ -66,7 +66,7 @@ public class BandServiceIntegrationTest {
 
     @Test
     void readAllTest() {
-        assertThat(this.service.read()).isEqualTo(Stream.of(this.bandDTO).collect(Collectors.toList()));
+        assertThat(Stream.of(this.bandDTO).collect(Collectors.toList())).isEqualTo(this.service.read());
     }
 
     @Test

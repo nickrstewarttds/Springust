@@ -35,6 +35,7 @@ public class Band {
     private List<Guitarist> guitarists = new ArrayList<>();
 
     public Band(String name) {
+        super();
         this.name = name;
     }
 

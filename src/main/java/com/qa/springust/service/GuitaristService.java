@@ -37,9 +37,7 @@ public class GuitaristService {
     }
 
     public List<GuitaristDTO> read() {
-        List<Guitarist> found = this.repo.findAll();
-        List<GuitaristDTO> streamed = found.stream().map(this::mapToDTO).collect(Collectors.toList());
-        return streamed;
+        return this.repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public GuitaristDTO read(Long id) {
@@ -59,9 +57,34 @@ public class GuitaristService {
     public boolean delete(Long id) {
         if (!this.repo.existsById(id)) {
             throw new GuitaristNotFoundException();
+        } else {
+            this.repo.deleteById(id);
         }
-        this.repo.deleteById(id);
         return !this.repo.existsById(id);
+    }
+
+    public List<GuitaristDTO> findByName(String name) {
+        return this.repo.findByName(name).stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<GuitaristDTO> findByStrings(Integer strings) {
+        return this.repo.findByStrings(strings).stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<GuitaristDTO> findByType(String type) {
+        return this.repo.findByType(type).stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<GuitaristDTO> orderByNameAZ() {
+        return this.repo.orderByName().stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<GuitaristDTO> orderByStringsAsc() {
+        return this.repo.orderByStrings().stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<GuitaristDTO> orderByTypeAZ() {
+        return this.repo.orderByType().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
 }
