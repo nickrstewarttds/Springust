@@ -15,6 +15,6 @@ public interface BandRepository extends JpaRepository<Band, Long> {
     List<Band> findByName(String name);
 
     @Query(value = "SELECT * FROM Band ORDER BY name", nativeQuery = true)
-    List<Band> orderByNameAZ();
+    List<Band> orderByName();
 
 }

@@ -73,22 +73,22 @@ class GuitaristRepositoryTest {
     }
 
     @Test
-    void orderByNameAZTest() {
-        List<Guitarist> obtained = this.repo.orderByName();
-        assertThat(this.listExpected.stream().map(e -> e.getName()).equals(obtained.stream().map(e -> e.getName())));
+    void orderByNameTest() {
+        List<Guitarist> listActual = this.repo.orderByName();
+        assertThat(this.listExpected.stream().map(e -> e.getName()).equals(listActual.stream().map(e -> e.getName())));
     }
 
     @Test
-    void orderByStringsAscTest() {
-        List<Guitarist> obtained = this.repo.orderByStrings();
+    void orderByStringsTest() {
+        List<Guitarist> listActual = this.repo.orderByStrings();
         assertThat(
-                this.listExpected.stream().map(e -> e.getStrings()).equals(obtained.stream().map(e -> e.getStrings())));
+                this.listExpected.stream().map(e -> e.getStrings()).equals(listActual.stream().map(e -> e.getStrings())));
     }
 
     @Test
-    void orderByTypeAZTest() {
-        List<Guitarist> obtained = this.repo.orderByType();
-        assertThat(this.listExpected.stream().map(e -> e.getType()).equals(obtained.stream().map(e -> e.getType())));
+    void orderByTypeTest() {
+        List<Guitarist> listActual = this.repo.orderByType();
+        assertThat(this.listExpected.stream().map(e -> e.getType()).equals(listActual.stream().map(e -> e.getType())));
     }
 
 }

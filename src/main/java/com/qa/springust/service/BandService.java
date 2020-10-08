@@ -69,7 +69,7 @@ public class BandService {
     }
 
     public List<BandDTO> orderByNameAZ() {
-        return this.repo.orderByNameAZ().stream().map(this::mapToDTO).collect(Collectors.toList());
+        return this.repo.orderByName().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
 }
