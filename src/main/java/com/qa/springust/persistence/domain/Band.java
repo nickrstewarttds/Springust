@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +31,7 @@ public class Band {
 
     private String name;
 
-    @OneToMany(mappedBy = "band", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "band", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Guitarist> guitarists = new ArrayList<>();
 
     public Band(String name) {

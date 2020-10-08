@@ -40,55 +40,54 @@ class GuitaristServiceIntegrationTest {
 
     private Guitarist testGuitarist;
     private Guitarist testGuitaristWithId;
-    private GuitaristDTO testGuitaristDTO;
+    private GuitaristDTO guitaristDTO;
 
     private Long id;
+
     private final String name = "John Darnielle";
     private final Integer strings = 6;
-    private final String type = "Ibanez Talman";
+    private final String type = "Guitar";
+
+    private final String updatedName = "PPH";
+    private final Integer updatedStrings = 4;
+    private final String updatedType = "Bass";
 
     @BeforeEach
     void init() {
         this.repo.deleteAll();
-        this.testGuitarist = new Guitarist(name, strings, type);
+        this.testGuitarist = new Guitarist(this.name, this.strings, this.type);
         this.testGuitaristWithId = this.repo.save(this.testGuitarist);
-        this.testGuitaristDTO = this.mapToDTO(testGuitaristWithId);
+        this.guitaristDTO = this.mapToDTO(this.testGuitaristWithId);
         this.id = this.testGuitaristWithId.getId();
     }
 
     @Test
-    void testCreate() {
-        assertThat(this.testGuitaristDTO)
-            .isEqualTo(this.service.create(testGuitarist));
+    void createTest() {
+        assertThat(this.guitaristDTO).isEqualTo(this.service.create(this.testGuitarist));
     }
 
     @Test
-    void testRead() {
-        assertThat(this.testGuitaristDTO)
-                .isEqualTo(this.service.read(this.id));
+    void readOneTest() {
+        assertThat(this.guitaristDTO).isEqualTo(this.service.read(this.id));
     }
 
     @Test
-    void testReadAll() {
+    void readAllTest() {
         // check this one out with a breakpoint and running it in debug mode
         // so you can see the stream happening
-        assertThat(this.service.read())
-                .isEqualTo(Stream.of(this.testGuitaristDTO)
-                        .collect(Collectors.toList()));
+        assertThat(this.service.read()).isEqualTo(Stream.of(this.guitaristDTO).collect(Collectors.toList()));
     }
 
     @Test
-    void testUpdate() {
-        GuitaristDTO newGuitarist = new GuitaristDTO(null, "Peter Peter Hughes", 4, "Fender American");
-        GuitaristDTO updatedGuitarist =
-                new GuitaristDTO(this.id, newGuitarist.getName(), newGuitarist.getStrings(), newGuitarist.getType());
+    void updateTest() {
+        GuitaristDTO oldDTO = new GuitaristDTO(null, this.updatedName, this.updatedStrings, this.updatedType);
+        GuitaristDTO newDTO = new GuitaristDTO(this.id, oldDTO.getName(), oldDTO.getStrings(), oldDTO.getType());
 
-        assertThat(updatedGuitarist)
-            .isEqualTo(this.service.update(newGuitarist, this.id));
+        assertThat(newDTO).isEqualTo(this.service.update(oldDTO, this.id));
     }
 
     @Test
-    void testDelete() {
+    void deleteTest() {
         assertThat(this.service.delete(this.id)).isTrue();
     }
 

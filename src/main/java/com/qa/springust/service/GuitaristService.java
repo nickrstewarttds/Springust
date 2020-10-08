@@ -49,6 +49,9 @@ public class GuitaristService {
 
     public GuitaristDTO update(GuitaristDTO guitaristDTO, Long id) {
         Guitarist toUpdate = this.repo.findById(id).orElseThrow(GuitaristNotFoundException::new);
+        toUpdate.setName(guitaristDTO.getName());
+        toUpdate.setStrings(guitaristDTO.getStrings());
+        toUpdate.setType(guitaristDTO.getType());
         SpringustBeanUtils.mergeNotNull(guitaristDTO, toUpdate);
         return this.mapToDTO(this.repo.save(toUpdate));
     }
