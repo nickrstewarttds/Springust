@@ -32,7 +32,7 @@ public class Band {
     private String name;
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Guitarist> guitarists = new ArrayList<>();
+    private List<Musician> musicians = new ArrayList<>();
 
     public Band(String name) {
         super();

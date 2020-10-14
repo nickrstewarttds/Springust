@@ -7,10 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qa.springust.dto.BandDTO;
 import com.qa.springust.exception.BandNotFoundException;
 import com.qa.springust.persistence.domain.Band;
 import com.qa.springust.persistence.repository.BandRepository;
+import com.qa.springust.rest.dto.BandDTO;
 import com.qa.springust.utils.SpringustBeanUtils;
 
 @Service

@@ -22,7 +22,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class Guitarist {
+public class Musician {
 
     @Id // Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Guitarist {
     @Size(min = 0, max = 55)
     private String name;
 
-    @Min(4)
+    @Min(0)
     @Max(12)
     private Integer strings;
 
@@ -42,7 +42,7 @@ public class Guitarist {
     @ManyToOne
     private Band band;
 
-    public Guitarist(String name, Integer strings, String type) {
+    public Musician(String name, Integer strings, String type) {
         super();
         this.name = name;
         this.strings = strings;

@@ -1,4 +1,4 @@
-package com.qa.springust.dto;
+package com.qa.springust.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,6 @@ public class BandDTO {
 
     private Long id;
     private String name;
-    private List<GuitaristDTO> guitarists = new ArrayList<>();
+    private List<MusicianDTO> musicians = new ArrayList<>();
 
 }

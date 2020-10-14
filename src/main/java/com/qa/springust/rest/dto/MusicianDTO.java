@@ -1,4 +1,4 @@
-package com.qa.springust.dto;
+package com.qa.springust.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class GuitaristDTO {
+public class MusicianDTO {
 
     // D - Data
     // T - Transfer

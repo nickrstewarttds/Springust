@@ -1,4 +1,4 @@
-package com.qa.springust.rest;
+package com.qa.springust.rest.controller;
 
 import java.util.List;
 
@@ -14,76 +14,78 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.qa.springust.dto.GuitaristDTO;
-import com.qa.springust.persistence.domain.Guitarist;
-import com.qa.springust.service.GuitaristService;
+import com.qa.springust.exception.MusicianNotFoundException;
+import com.qa.springust.persistence.domain.Musician;
+import com.qa.springust.rest.dto.MusicianDTO;
+import com.qa.springust.service.MusicianService;
 
 @RestController
-@RequestMapping("/guitarist")
-public class GuitaristController {
+@RequestMapping("/musician")
+public class MusicianController {
 
-    private GuitaristService service;
+    private MusicianService service;
 
     @Autowired
-    public GuitaristController(GuitaristService service) {
+    public MusicianController(MusicianService service) {
         super();
         this.service = service;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GuitaristDTO> create(@RequestBody Guitarist guitarist) {
-        GuitaristDTO created = this.service.create(guitarist);
+    public ResponseEntity<MusicianDTO> create(@RequestBody Musician musician) {
+        MusicianDTO created = this.service.create(musician);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/read/{id}")
-    public ResponseEntity<GuitaristDTO> read(@PathVariable Long id) {
+    public ResponseEntity<MusicianDTO> read(@PathVariable Long id) throws MusicianNotFoundException {
         return ResponseEntity.ok(this.service.read(id));
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<GuitaristDTO>> read() {
+    public ResponseEntity<List<MusicianDTO>> read() {
         return ResponseEntity.ok(this.service.read());
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<GuitaristDTO> update(@PathVariable Long id, @RequestBody GuitaristDTO guitaristDTO) {
-        return new ResponseEntity<>(this.service.update(guitaristDTO, id), HttpStatus.ACCEPTED);
+    public ResponseEntity<MusicianDTO> update(@PathVariable Long id, @RequestBody MusicianDTO musicianDTO) {
+        return new ResponseEntity<>(this.service.update(musicianDTO, id), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<GuitaristDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<MusicianDTO> delete(@PathVariable Long id) {
         return this.service.delete(id) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) // 204
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 
     @GetMapping("/readBy/{name}")
-    public ResponseEntity<List<GuitaristDTO>> findByName(@PathVariable String name) {
+    public ResponseEntity<List<MusicianDTO>> findByName(@PathVariable String name) throws MusicianNotFoundException {
         return ResponseEntity.ok(this.service.findByName(name));
     }
 
     @GetMapping("/readBy/{strings}")
-    public ResponseEntity<List<GuitaristDTO>> findByStrings(@PathVariable Integer strings) {
+    public ResponseEntity<List<MusicianDTO>> findByStrings(@PathVariable Integer strings)
+            throws MusicianNotFoundException {
         return ResponseEntity.ok(this.service.findByStrings(strings));
     }
 
     @GetMapping("/readBy/{type}")
-    public ResponseEntity<List<GuitaristDTO>> findByType(@PathVariable String type) {
+    public ResponseEntity<List<MusicianDTO>> findByType(@PathVariable String type) throws MusicianNotFoundException {
         return ResponseEntity.ok(this.service.findByType(type));
     }
 
     @GetMapping("/read/names")
-    public ResponseEntity<List<GuitaristDTO>> orderByName() {
+    public ResponseEntity<List<MusicianDTO>> orderByName() {
         return ResponseEntity.ok(this.service.orderByNameAZ());
     }
 
     @GetMapping("/read/strings")
-    public ResponseEntity<List<GuitaristDTO>> orderByStrings() {
+    public ResponseEntity<List<MusicianDTO>> orderByStrings() {
         return ResponseEntity.ok(this.service.orderByStringsAsc());
     }
 
     @GetMapping("/read/types")
-    public ResponseEntity<List<GuitaristDTO>> orderByType() {
+    public ResponseEntity<List<MusicianDTO>> orderByType() {
         return ResponseEntity.ok(this.service.orderByTypeAZ());
     }
 

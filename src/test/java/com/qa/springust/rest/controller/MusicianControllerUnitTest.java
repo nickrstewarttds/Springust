@@ -1,4 +1,4 @@
-package com.qa.springust.rest;
+package com.qa.springust.rest.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -18,22 +18,23 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.qa.springust.dto.GuitaristDTO;
-import com.qa.springust.persistence.domain.Guitarist;
-import com.qa.springust.service.GuitaristService;
+import com.qa.springust.global.MUSICIAN;
+import com.qa.springust.persistence.domain.Musician;
+import com.qa.springust.rest.dto.MusicianDTO;
+import com.qa.springust.service.MusicianService;
 
 @SpringBootTest
-class GuitaristControllerUnitTest {
+class MusicianControllerUnitTest {
 
     // the thing we're actually testing
     // (this is the real thing we've made)
     @Autowired
-    private GuitaristController controller;
+    private MusicianController controller;
 
     // the mock thing that we're connecting to
     // so that any requests we receive are always valid
     @MockBean
-    private GuitaristService service;
+    private MusicianService service;
 
     // we need the mapper, because it works with the mock service layer
     @Autowired
@@ -41,54 +42,57 @@ class GuitaristControllerUnitTest {
 
     // and we need the dto mapping as well, otherwise we can't test
     // our controller methods (which rely on RE<xDTO>)
-    private GuitaristDTO mapToDTO(Guitarist guitarist) {
-        return this.modelMapper.map(guitarist, GuitaristDTO.class);
+    private MusicianDTO mapToDTO(Musician musician) {
+        return this.modelMapper.map(musician, MusicianDTO.class);
     }
 
-    private List<Guitarist> guitaristList;
-    private Guitarist testGuitarist;
-    private Guitarist testGuitaristWithId;
-    private GuitaristDTO guitaristDTO;
-
     private final Long id = 1L;
-    private final String name = "John Darnielle";
-    private final Integer strings = 6;
-    private final String type = "Ibanez Talman";
+    private List<Musician> musicianList;
+    private Musician testMusician;
+    private Musician testMusicianWithId;
+    private MusicianDTO musicianDTO;
+    private MusicianDTO musicianDTOWithId;
 
     @BeforeEach
     void init() {
-        this.guitaristList = new ArrayList<>();
-        this.testGuitarist = new Guitarist(name, strings, type);
-        this.testGuitaristWithId = new Guitarist(testGuitarist.getName(), testGuitarist.getStrings(),
-                testGuitarist.getType());
-        this.testGuitaristWithId.setId(id);
-        this.guitaristList.add(testGuitaristWithId);
-        this.guitaristDTO = this.mapToDTO(testGuitaristWithId);
+        this.musicianList = new ArrayList<>();
+
+        this.testMusician = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
+                MUSICIAN.GUITARIST.getType());
+        this.testMusicianWithId = new Musician(this.testMusician.getName(), this.testMusician.getStrings(),
+                this.testMusician.getType());
+        this.testMusicianWithId.setId(this.id);
+
+        this.musicianList.add(this.testMusicianWithId);
+
+        this.musicianDTO = new MusicianDTO(null, this.testMusician.getName(), this.testMusician.getStrings(),
+                this.testMusician.getType());
+        this.musicianDTOWithId = this.mapToDTO(this.testMusicianWithId);
     }
 
     @Test
-    void createTest() {
+    void createTest() throws Exception {
         // set up what the mock is doing
         // when running some method, return some value we've predefined up there ^
-        when(this.service.create(this.testGuitarist)).thenReturn(this.guitaristDTO);
+        when(this.service.create(this.testMusician)).thenReturn(this.musicianDTO);
 
         // these are the same thing:
         // JUNIT: assertEquals(expected, actual)
         // MOCKITO: assertThat(expected).isEqualTo(actual);
         // .isEqualTo(what is the method actually returning?)
         // assertThat(what do we want to compare the method to?)
-        assertThat(new ResponseEntity<GuitaristDTO>(this.guitaristDTO, HttpStatus.CREATED))
-                .isEqualTo(this.controller.create(this.testGuitarist));
+        assertThat(new ResponseEntity<MusicianDTO>(this.musicianDTO, HttpStatus.CREATED))
+                .isEqualTo(this.controller.create(this.testMusician));
 
         // check that the mocked method we ran our assertion on ... actually ran!
-        verify(this.service, times(1)).create(this.testGuitarist);
+        verify(this.service, times(1)).create(this.testMusician);
     }
 
     @Test
-    void readOneTest() {
-        when(this.service.read(this.id)).thenReturn(this.guitaristDTO);
+    void readOneTest() throws Exception {
+        when(this.service.read(this.id)).thenReturn(this.musicianDTO);
 
-        assertThat(new ResponseEntity<GuitaristDTO>(this.guitaristDTO, HttpStatus.OK))
+        assertThat(new ResponseEntity<MusicianDTO>(this.musicianDTO, HttpStatus.OK))
                 .isEqualTo(this.controller.read(this.id));
 
         verify(this.service, times(1)).read(this.id);
@@ -96,9 +100,9 @@ class GuitaristControllerUnitTest {
 
     // controller <- service
     @Test
-    void readAllTest() {
+    void readAllTest() throws Exception {
         when(this.service.read())
-                .thenReturn(this.guitaristList.stream().map(this::mapToDTO).collect(Collectors.toList()));
+                .thenReturn(this.musicianList.stream().map(this::mapToDTO).collect(Collectors.toList()));
 
         // getBody() = get the list returned from the controller.read() method
         // isEmpty()).isFalse() - check that that list HAS SOMETHING IN IT
@@ -110,26 +114,22 @@ class GuitaristControllerUnitTest {
 
     // controller <- service
     @Test
-    void updateTest() {
+    void updateTest() throws Exception {
         // we need to feed the mocked service some updated data values
-        // that way we can test if our 6-string guitarist changes to a 4-string
-        // 'guitarist'
-        GuitaristDTO oldGuitarist = new GuitaristDTO(null, "PPH", 4, "Bass");
-        GuitaristDTO newGuitarist = new GuitaristDTO(this.id, oldGuitarist.getName(), oldGuitarist.getStrings(),
-                oldGuitarist.getType());
+        // that way we can test if our old musician changes its values to something else
 
         // feed the mock service the values we made up here ^
-        when(this.service.update(oldGuitarist, this.id)).thenReturn(newGuitarist);
+        when(this.service.update(this.musicianDTO, this.id)).thenReturn(this.musicianDTOWithId);
 
-        assertThat(new ResponseEntity<GuitaristDTO>(newGuitarist, HttpStatus.ACCEPTED))
-                .isEqualTo(this.controller.update(this.id, oldGuitarist));
+        assertThat(new ResponseEntity<MusicianDTO>(this.musicianDTOWithId, HttpStatus.ACCEPTED))
+                .isEqualTo(this.controller.update(this.id, this.musicianDTO));
 
-        verify(this.service, times(1)).update(oldGuitarist, this.id);
+        verify(this.service, times(1)).update(this.musicianDTO, this.id);
     }
 
     // controller -> service
     @Test
-    void deleteTest() {
+    void deleteTest() throws Exception {
         this.controller.delete(this.id); // this will ping the service, which is mocked!
 
         // if the delete function ran, then it pinged the service successfully

@@ -13,10 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.qa.springust.dto.BandDTO;
-import com.qa.springust.dto.GuitaristDTO;
+import com.qa.springust.global.BAND;
 import com.qa.springust.persistence.domain.Band;
 import com.qa.springust.persistence.repository.BandRepository;
+import com.qa.springust.rest.dto.BandDTO;
+import com.qa.springust.rest.dto.MusicianDTO;
 
 @SpringBootTest
 public class BandServiceIntegrationTest {
@@ -34,51 +35,48 @@ public class BandServiceIntegrationTest {
         return this.modelMapper.map(band, BandDTO.class);
     }
 
-    private final List<GuitaristDTO> guitarists = new ArrayList<>();
+    private Long id;
+
+    private List<MusicianDTO> musiciansList;
+
     private Band testBand;
     private Band testBandWithId;
     private BandDTO bandDTO;
-
-    private Long id;
-
-    private final String name = "The Mountain Goats";
-
-    private final String updatedName = "The Extra Glenns";
+    private BandDTO bandDTOWithId;
 
     @BeforeEach
     void init() {
         this.repo.deleteAll();
-        this.testBand = new Band(this.name);
+        this.musiciansList = new ArrayList<>();
+        this.testBand = new Band(BAND.TMG.getName());
         this.testBandWithId = this.repo.save(this.testBand);
-        this.bandDTO = this.mapToDTO(this.testBandWithId);
         this.id = this.testBandWithId.getId();
+        this.bandDTOWithId = this.mapToDTO(this.testBandWithId);
+        this.bandDTO = new BandDTO(null, this.testBand.getName(), this.musiciansList);
     }
 
     @Test
-    void createTest() {
-        assertThat(this.bandDTO).isEqualTo(this.service.create(this.testBand));
+    void createTest() throws Exception {
+        assertThat(this.bandDTOWithId).isEqualTo(this.service.create(this.testBand));
     }
 
     @Test
-    void readOneTest() {
-        assertThat(this.bandDTO).isEqualTo(this.service.read(this.id));
+    void readOneTest() throws Exception {
+        assertThat(this.bandDTOWithId).isEqualTo(this.service.read(this.id));
     }
 
     @Test
-    void readAllTest() {
-        assertThat(Stream.of(this.bandDTO).collect(Collectors.toList())).isEqualTo(this.service.read());
+    void readAllTest() throws Exception {
+        assertThat(Stream.of(this.bandDTOWithId).collect(Collectors.toList())).isEqualTo(this.service.read());
     }
 
     @Test
-    void updateTest() {
-        BandDTO oldDTO = new BandDTO(null, this.updatedName, this.guitarists);
-        BandDTO newDTO = new BandDTO(this.id, oldDTO.getName(), oldDTO.getGuitarists());
-
-        assertThat(newDTO).isEqualTo(this.service.update(oldDTO, this.id));
+    void updateTest() throws Exception {
+        assertThat(this.bandDTOWithId).isEqualTo(this.service.update(this.bandDTO, this.id));
     }
 
     @Test
-    void deleteTest() {
+    void deleteTest() throws Exception {
         assertThat(this.service.delete(this.id)).isTrue();
     }
 
