@@ -24,7 +24,6 @@ import com.qa.springust.persistence.domain.Band;
 import com.qa.springust.persistence.repository.BandRepository;
 import com.qa.springust.rest.dto.BandDTO;
 import com.qa.springust.rest.dto.MusicianDTO;
-import com.qa.springust.service.BandService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,16 +35,12 @@ class BandControllerIntegrationTest {
     private MockMvc mvc;
 
     @Autowired
-    private BandService serviceMock;
-
-    @Autowired
     private BandRepository repo;
 
     @Autowired
     private ObjectMapper jsonifier;
 
     private final String URI = "/band";
-    private final String DUMMY = "foo";
 
     private Long id;
     private List<BandDTO> bandDTOList;
