@@ -3,11 +3,12 @@ package com.qa.springust.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qa.springust.exception.MusicianNotFoundException;
 import com.qa.springust.persistence.domain.Musician;
 import com.qa.springust.persistence.repository.MusicianRepository;
 import com.qa.springust.rest.dto.MusicianDTO;
@@ -31,9 +32,7 @@ public class MusicianService {
     }
 
     public MusicianDTO create(Musician musician) {
-        Musician created = this.repo.save(musician);
-        MusicianDTO mapped = this.mapToDTO(created);
-        return mapped;
+        return this.mapToDTO(this.repo.save(musician));
     }
 
     public List<MusicianDTO> read() {
@@ -41,12 +40,12 @@ public class MusicianService {
     }
 
     public MusicianDTO read(Long id) {
-        Musician found = this.repo.findById(id).orElseThrow(MusicianNotFoundException::new);
+        Musician found = this.repo.findById(id).orElseThrow(EntityNotFoundException::new);
         return this.mapToDTO(found);
     }
 
     public MusicianDTO update(MusicianDTO musicianDTO, Long id) {
-        Musician toUpdate = this.repo.findById(id).orElseThrow(MusicianNotFoundException::new);
+        Musician toUpdate = this.repo.findById(id).orElseThrow(EntityNotFoundException::new);
         toUpdate.setName(musicianDTO.getName());
         toUpdate.setStrings(musicianDTO.getStrings());
         toUpdate.setType(musicianDTO.getType());
@@ -56,7 +55,7 @@ public class MusicianService {
 
     public boolean delete(Long id) {
         if (!this.repo.existsById(id)) {
-            throw new MusicianNotFoundException();
+            throw new EntityNotFoundException();
         } else {
             this.repo.deleteById(id);
         }

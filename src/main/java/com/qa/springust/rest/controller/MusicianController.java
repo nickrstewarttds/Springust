@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.qa.springust.exception.MusicianNotFoundException;
 import com.qa.springust.persistence.domain.Musician;
 import com.qa.springust.rest.dto.MusicianDTO;
 import com.qa.springust.service.MusicianService;
@@ -38,7 +37,7 @@ public class MusicianController {
     }
 
     @GetMapping("/read/{id}")
-    public ResponseEntity<MusicianDTO> read(@PathVariable Long id) throws MusicianNotFoundException {
+    public ResponseEntity<MusicianDTO> read(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.read(id));
     }
 
@@ -59,18 +58,17 @@ public class MusicianController {
     }
 
     @GetMapping("/readBy/{name}")
-    public ResponseEntity<List<MusicianDTO>> findByName(@PathVariable String name) throws MusicianNotFoundException {
+    public ResponseEntity<List<MusicianDTO>> findByName(@PathVariable String name) {
         return ResponseEntity.ok(this.service.findByName(name));
     }
 
     @GetMapping("/readBy/{strings}")
-    public ResponseEntity<List<MusicianDTO>> findByStrings(@PathVariable Integer strings)
-            throws MusicianNotFoundException {
+    public ResponseEntity<List<MusicianDTO>> findByStrings(@PathVariable Integer strings) {
         return ResponseEntity.ok(this.service.findByStrings(strings));
     }
 
     @GetMapping("/readBy/{type}")
-    public ResponseEntity<List<MusicianDTO>> findByType(@PathVariable String type) throws MusicianNotFoundException {
+    public ResponseEntity<List<MusicianDTO>> findByType(@PathVariable String type) {
         return ResponseEntity.ok(this.service.findByType(type));
     }
 

@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class BandDTOTest {
+class BandDTOTest {
     @Test
-    public void testEquals() throws Exception {
+    void testEquals() throws Exception {
         simple().forClass(BandDTO.class).verify();
     }
 }

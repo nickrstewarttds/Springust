@@ -23,7 +23,7 @@ import com.qa.springust.rest.dto.BandDTO;
 import com.qa.springust.rest.dto.MusicianDTO;
 
 @SpringBootTest
-public class BandServiceUnitTest {
+class BandServiceUnitTest {
     @Autowired
     private BandService service;
 

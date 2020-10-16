@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.qa.springust.exception.BandNotFoundException;
 import com.qa.springust.persistence.domain.Band;
 import com.qa.springust.rest.dto.BandDTO;
 import com.qa.springust.service.BandService;
@@ -43,7 +42,7 @@ public class BandController {
     }
 
     @GetMapping("/read/{id}")
-    public ResponseEntity<BandDTO> read(@PathVariable Long id) throws BandNotFoundException {
+    public ResponseEntity<BandDTO> read(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.read(id));
     }
 
@@ -59,7 +58,7 @@ public class BandController {
     }
 
     @GetMapping("/readBy/{name}")
-    public ResponseEntity<List<BandDTO>> findByName(@PathVariable String name) throws BandNotFoundException {
+    public ResponseEntity<List<BandDTO>> findByName(@PathVariable String name) {
         return ResponseEntity.ok(this.service.findByName(name));
     }
 
