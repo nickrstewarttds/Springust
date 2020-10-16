@@ -1,6 +1,7 @@
 package com.qa.springust.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,6 +103,13 @@ class MusicianServiceUnitTest {
     }
 
     @Test
+    void readOneWrongIdTest() throws Exception {
+        when(this.repo.findById(this.id)).thenThrow(new EntityNotFoundException());
+        when(this.modelMapper.map(this.testMusicianWithId, MusicianDTO.class)).thenReturn(this.musicianDTOWithId);
+        assertThrows(EntityNotFoundException.class, () -> this.service.read(this.id));
+    }
+
+    @Test
     void readAllTest() throws Exception {
         // findAll() returns a list, which is handy, since we've got one spun up :D
         when(this.repo.findAll()).thenReturn(this.musicianList);
@@ -131,6 +141,13 @@ class MusicianServiceUnitTest {
         when(this.repo.existsById(this.id)).thenReturn(true, false);
         assertThat(this.service.delete(this.id)).isTrue();
         verify(this.repo, atLeastOnce()).deleteById(this.id);
+        verify(this.repo, atLeastOnce()).existsById(this.id);
+    }
+
+    @Test
+    void deleteWrongIdTest() throws Exception {
+        when(this.repo.existsById(this.id)).thenReturn(false);
+        assertThrows(EntityNotFoundException.class, () -> this.service.delete(this.id));
         verify(this.repo, atLeastOnce()).existsById(this.id);
     }
 
