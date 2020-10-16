@@ -26,7 +26,7 @@ import com.qa.springust.rest.dto.MusicianDTO;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MusicianControllerIntegrationTest {
+class MusicianControllerIntegrationTest {
 
     // autowiring objects for mocking different aspects of the application
     // here, a mock repo (and relevant mappers) are autowired

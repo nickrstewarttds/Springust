@@ -3,11 +3,12 @@ package com.qa.springust.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qa.springust.exception.BandNotFoundException;
 import com.qa.springust.persistence.domain.Band;
 import com.qa.springust.persistence.repository.BandRepository;
 import com.qa.springust.rest.dto.BandDTO;
@@ -30,14 +31,8 @@ public class BandService {
         return this.mapper.map(band, BandDTO.class);
     }
 
-//    private Band mapFromDTO(BandDTO bandDTO) {
-//        return this.mapper.map(bandDTO, Band.class);
-//    }
-
     public BandDTO create(Band band) {
-        Band created = this.repo.save(band);
-        BandDTO mapped = this.mapToDTO(created);
-        return mapped;
+        return this.mapToDTO(this.repo.save(band));
     }
 
     public List<BandDTO> read() {
@@ -45,11 +40,11 @@ public class BandService {
     }
 
     public BandDTO read(Long id) {
-        return this.mapToDTO(this.repo.findById(id).orElseThrow(BandNotFoundException::new));
+        return this.mapToDTO(this.repo.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
     public BandDTO update(BandDTO bandDTO, Long id) {
-        Band toUpdate = this.repo.findById(id).orElseThrow(BandNotFoundException::new);
+        Band toUpdate = this.repo.findById(id).orElseThrow(EntityNotFoundException::new);
         toUpdate.setName(bandDTO.getName());
         SpringustBeanUtils.mergeNotNull(bandDTO, toUpdate);
         return this.mapToDTO(this.repo.save(toUpdate));
@@ -57,7 +52,7 @@ public class BandService {
 
     public boolean delete(Long id) {
         if (!this.repo.existsById(id)) {
-            throw new BandNotFoundException();
+            throw new EntityNotFoundException();
         } else {
             this.repo.deleteById(id);
         }
