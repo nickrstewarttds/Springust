@@ -15,19 +15,17 @@ import com.qa.springust.global.MUSICIAN;
 @TestInstance(Lifecycle.PER_CLASS)
 class MusicianTest {
 
+    private static final Long TEST_ID = 1L;
+
     private Musician musician;
-    private static final Musician COMPARATOR = new Musician(MUSICIAN.GUITARIST.getName(),
+    private static final Musician COMPARATOR = new Musician(TEST_ID, MUSICIAN.GUITARIST.getName(),
             MUSICIAN.GUITARIST.getStrings(), MUSICIAN.GUITARIST.getType());
     private static final Musician NULL_COMPARATOR = new Musician(null, null, null);
 
-    private final Long ID = 1L;
-
     @BeforeEach
     void init() {
-        this.musician = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
+        this.musician = new Musician(TEST_ID, MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
                 MUSICIAN.GUITARIST.getType());
-        this.musician.setId(this.ID);
-        COMPARATOR.setId(this.ID);
     }
 
     @Test
@@ -85,7 +83,7 @@ class MusicianTest {
 
     @Test
     void checkAssignedIdTest() {
-        assertThat(this.ID).isEqualTo(this.musician.getId());
+        assertThat(this.musician.getId()).isEqualTo(TEST_ID);
     }
 
     @Test

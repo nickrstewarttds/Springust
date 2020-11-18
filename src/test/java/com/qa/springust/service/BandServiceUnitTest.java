@@ -10,22 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
+import com.qa.springust.exception.BandNotFoundException;
 import com.qa.springust.global.BAND;
+import com.qa.springust.global.MUSICIAN;
 import com.qa.springust.persistence.domain.Band;
+import com.qa.springust.persistence.domain.Musician;
 import com.qa.springust.persistence.repository.BandRepository;
 import com.qa.springust.rest.dto.BandDTO;
-import com.qa.springust.rest.dto.MusicianDTO;
 
 @SpringBootTest
+@ActiveProfiles(profiles = "test")
 class BandServiceUnitTest {
     @Autowired
     private BandService service;
@@ -33,89 +34,90 @@ class BandServiceUnitTest {
     @MockBean
     private BandRepository repo;
 
-    @MockBean
-    private ModelMapper modelMapper;
+    @Autowired
+    private ModelMapper mapper;
 
-    final Long id = 1L;
-
-    private List<Band> bandList;
-    private List<MusicianDTO> musicianDTOList;
-
-    private Band testBand;
-    private Band testBandWithId;
-    private BandDTO bandDTO;
-    private BandDTO bandDTOWithId;
-
-    @BeforeEach
-    void init() {
-        this.bandList = new ArrayList<>();
-        this.musicianDTOList = new ArrayList<>();
-
-        this.testBand = new Band(BAND.TMG.getName());
-        this.bandList.add(this.testBand);
-
-        this.testBandWithId = new Band(testBand.getName());
-        this.testBandWithId.setId(this.id);
-
-        this.bandDTOWithId = modelMapper.map(testBandWithId, BandDTO.class);
-
-        this.bandDTO = new BandDTO(null, this.testBand.getName(), this.musicianDTOList);
+    private BandDTO map(Band band) {
+        return this.mapper.map(band, BandDTO.class);
     }
+
+    private final Long TEST_ID = 1L;
+
+    private final Musician TEST_MUSICIAN = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
+            MUSICIAN.GUITARIST.getType());
+
+    private final Band TEST_BAND = new Band(BAND.TMG.getName());
 
     @Test
     void createTest() throws Exception {
-        when(this.repo.save(this.testBand)).thenReturn(this.testBandWithId);
-        when(this.modelMapper.map(this.testBandWithId, BandDTO.class)).thenReturn(this.bandDTOWithId);
-        assertThat(this.bandDTOWithId).isEqualTo(this.service.create(this.testBand));
-        verify(this.repo, atLeastOnce()).save(this.testBand);
+        TEST_BAND.setId(TEST_ID);
+        BandDTO expected = this.map(TEST_BAND);
+
+        when(this.repo.save(TEST_BAND)).thenReturn(TEST_BAND);
+        assertThat(this.service.create(TEST_BAND)).isEqualTo(expected);
+        verify(this.repo, atLeastOnce()).save(TEST_BAND);
     }
 
     @Test
     void readOneTest() throws Exception {
-        when(this.repo.findById(this.id)).thenReturn(Optional.of(this.testBandWithId));
-        when(this.modelMapper.map(this.testBandWithId, BandDTO.class)).thenReturn(this.bandDTOWithId);
-        assertThat(this.bandDTOWithId).isEqualTo(this.service.read(this.id));
-        verify(this.repo, atLeastOnce()).findById(this.id);
+        TEST_BAND.setId(TEST_ID);
+        BandDTO expected = this.map(TEST_BAND);
+
+        when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND));
+        assertThat(this.service.read(TEST_ID)).isEqualTo(expected);
+        verify(this.repo, atLeastOnce()).findById(TEST_ID);
     }
 
     @Test
     void readOneWrongIdTest() throws Exception {
-        when(this.repo.findById(this.id)).thenThrow(new EntityNotFoundException());
-        when(this.modelMapper.map(this.testBandWithId, BandDTO.class)).thenReturn(this.bandDTOWithId);
-        assertThrows(EntityNotFoundException.class, () -> this.service.read(this.id));
+        List<Band> bands = new ArrayList<>();
+        TEST_BAND.setId(TEST_ID);
+        bands.add(TEST_BAND);
+
+        when(this.repo.findById(TEST_ID)).thenThrow(new BandNotFoundException());
+        assertThrows(BandNotFoundException.class, () -> this.service.read(TEST_ID));
     }
 
     @Test
     void readAllTest() throws Exception {
-        when(this.repo.findAll()).thenReturn(this.bandList);
-        when(this.modelMapper.map(this.testBandWithId, BandDTO.class)).thenReturn(this.bandDTOWithId);
+        List<Band> bands = new ArrayList<>();
+        TEST_BAND.setId(TEST_ID);
+        bands.add(TEST_BAND);
+
+        when(this.repo.findAll()).thenReturn(bands);
         assertThat(this.service.read().isEmpty()).isFalse();
         verify(this.repo, atLeastOnce()).findAll();
     }
 
     @Test
     void updateTest() throws Exception {
-        when(this.repo.findById(this.id)).thenReturn(Optional.of(this.testBand));
-        when(this.repo.save(this.testBand)).thenReturn(this.testBandWithId);
-        when(this.modelMapper.map(this.testBandWithId, BandDTO.class)).thenReturn(this.bandDTOWithId);
-        assertThat(this.bandDTOWithId).isEqualTo(this.service.update(this.bandDTO, this.id));
-        verify(this.repo, atLeastOnce()).findById(this.id);
-        verify(this.repo, atLeastOnce()).save(this.testBand);
+        TEST_MUSICIAN.setId(TEST_ID);
+        BandDTO expected = this.map(TEST_BAND);
+
+        when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND));
+        when(this.repo.save(TEST_BAND)).thenReturn(TEST_BAND);
+        assertThat(this.service.update(expected, TEST_ID)).isEqualTo(expected);
+        verify(this.repo, atLeastOnce()).findById(TEST_ID);
+        verify(this.repo, atLeastOnce()).save(TEST_BAND);
     }
 
     @Test
     void deleteTest() throws Exception {
-        when(this.repo.existsById(this.id)).thenReturn(true, false);
-        assertThat(this.service.delete(this.id)).isTrue();
-        verify(this.repo, atLeastOnce()).deleteById(this.id);
-        verify(this.repo, atLeastOnce()).existsById(this.id);
+        boolean found = false;
+
+        when(this.repo.existsById(TEST_ID)).thenReturn(!found, found);
+        assertThat(this.service.delete(TEST_ID)).isNotEqualTo(found);
+        verify(this.repo, atLeastOnce()).deleteById(TEST_ID);
+        verify(this.repo, atLeastOnce()).existsById(TEST_ID);
     }
 
     @Test
     void deleteWrongIDTest() {
-        when(this.repo.existsById(this.id)).thenReturn(false);
-        assertThrows(EntityNotFoundException.class, () -> this.service.delete(this.id));
-        verify(this.repo, atLeastOnce()).existsById(this.id);
+        boolean found = false;
+
+        when(this.repo.existsById(TEST_ID)).thenReturn(found);
+        assertThrows(BandNotFoundException.class, () -> this.service.delete(TEST_ID));
+        verify(this.repo, atLeastOnce()).existsById(TEST_ID);
     }
 
 }

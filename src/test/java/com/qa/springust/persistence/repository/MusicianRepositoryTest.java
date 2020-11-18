@@ -25,13 +25,13 @@ class MusicianRepositoryTest {
     @Autowired
     private MusicianRepository repo;
 
-    private final Musician testGuitarist = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
+    private final Musician TEST_GUITARIST = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
             MUSICIAN.GUITARIST.getType());
-    private final Musician testBassist = new Musician(MUSICIAN.BASSIST.getName(), MUSICIAN.BASSIST.getStrings(),
+    private final Musician TEST_BASSIST = new Musician(MUSICIAN.BASSIST.getName(), MUSICIAN.BASSIST.getStrings(),
             MUSICIAN.BASSIST.getType());
-    private final Musician testSaxophonist = new Musician(MUSICIAN.SAXOPHONIST.getName(),
+    private final Musician TEST_SAXOPHONIST = new Musician(MUSICIAN.SAXOPHONIST.getName(),
             MUSICIAN.SAXOPHONIST.getStrings(), MUSICIAN.SAXOPHONIST.getType());
-    private final Musician testDrummer = new Musician(MUSICIAN.DRUMMER.getName(), MUSICIAN.DRUMMER.getStrings(),
+    private final Musician TEST_DRUMMER = new Musician(MUSICIAN.DRUMMER.getName(), MUSICIAN.DRUMMER.getStrings(),
             MUSICIAN.DRUMMER.getType());
 
     private final List<Musician> LIST_EXPECTED = new ArrayList<>();
@@ -39,10 +39,10 @@ class MusicianRepositoryTest {
 
     @BeforeAll
     void setup() {
-        this.LIST_EXPECTED.add(this.testGuitarist);
-        this.LIST_EXPECTED.add(this.testSaxophonist);
-        this.LIST_EXPECTED.add(this.testBassist);
-        this.LIST_EXPECTED.add(this.testDrummer);
+        this.LIST_EXPECTED.add(this.TEST_GUITARIST);
+        this.LIST_EXPECTED.add(this.TEST_SAXOPHONIST);
+        this.LIST_EXPECTED.add(this.TEST_BASSIST);
+        this.LIST_EXPECTED.add(this.TEST_DRUMMER);
         this.listActual = new ArrayList<>();
     }
 

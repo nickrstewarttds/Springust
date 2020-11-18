@@ -25,18 +25,18 @@ class BandRepositoryTest {
     @Autowired
     private BandRepository repo;
 
-    private final Band testTMG = new Band(BAND.TMG.getName());
-    private final Band testTEG = new Band(BAND.TEG.getName());
-    private final Band testTEL = new Band(BAND.TEL.getName());
+    private final Band TEST_BAND1 = new Band(BAND.TMG.getName());
+    private final Band TEST_BAND2 = new Band(BAND.TEG.getName());
+    private final Band TEST_BAND3 = new Band(BAND.TEL.getName());
 
     private final List<Band> LIST_EXPECTED = new ArrayList<>();
     private List<Band> listActual;
 
     @BeforeAll
     void setup() {
-        this.LIST_EXPECTED.add(this.testTMG);
-        this.LIST_EXPECTED.add(this.testTEG);
-        this.LIST_EXPECTED.add(this.testTEL);
+        this.LIST_EXPECTED.add(this.TEST_BAND1);
+        this.LIST_EXPECTED.add(this.TEST_BAND2);
+        this.LIST_EXPECTED.add(this.TEST_BAND3);
         this.listActual = new ArrayList<>();
     }
 

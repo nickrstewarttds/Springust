@@ -10,21 +10,15 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
+@Data
 public class Musician {
 
-    @Id // Primary Key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -41,6 +35,14 @@ public class Musician {
 
     @ManyToOne
     private Band band;
+
+    public Musician(Long id, String name, Integer strings, String type) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.strings = strings;
+        this.type = type;
+    }
 
     public Musician(String name, Integer strings, String type) {
         super();

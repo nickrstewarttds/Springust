@@ -16,17 +16,15 @@ import com.qa.springust.global.BAND;
 @TestInstance(Lifecycle.PER_CLASS)
 class BandTest {
 
-    private Band band;
-    private static final Band COMPARATOR = new Band(BAND.TMG.getName());
-    private static final Band NULL_COMPARATOR = new Band(null);
+    private static final Long TEST_ID = 1L;
 
-    private final Long ID = 1L;
+    private Band band;
+    private static final Band COMPARATOR = new Band(TEST_ID, BAND.TMG.getName());
+    private static final Band NULL_COMPARATOR = new Band(null);
 
     @BeforeEach
     void init() {
-        this.band = new Band(BAND.TMG.getName());
-        this.band.setId(this.ID);
-        COMPARATOR.setId(this.ID);
+        this.band = new Band(TEST_ID, BAND.TMG.getName());
     }
 
     @Test
@@ -77,7 +75,7 @@ class BandTest {
 
     @Test
     void checkAssignedIdTest() {
-        assertThat(ID).isEqualTo(this.band.getId());
+        assertThat(this.band.getId()).isEqualTo(TEST_ID);
     }
 
     @Test

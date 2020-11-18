@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS `musician`;
+DROP TABLE IF EXISTS `band`;
+
+CREATE TABLE IF NOT EXISTS `band` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `musician` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `strings` INTEGER NOT NULL,
+    `type` VARCHAR(255) NOT NULL,
+    `band_id` INT NOT NULL,
+    CONSTRAINT `fk_band_id` FOREIGN KEY (`band_id`)
+        REFERENCES `band` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);

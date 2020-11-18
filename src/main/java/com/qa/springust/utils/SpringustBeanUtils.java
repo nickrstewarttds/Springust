@@ -1,10 +1,11 @@
 package com.qa.springust.utils;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class SpringustBeanUtils {
 
     public static void mergeNotNull(Object source, Object target) {
-        BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
+        copyProperties(source, target, getNullPropertyNames(source));
     }
 
     // this method allows your update() method to use all the source object's values

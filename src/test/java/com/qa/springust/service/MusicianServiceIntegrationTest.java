@@ -2,10 +2,11 @@ package com.qa.springust.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,6 @@ import com.qa.springust.rest.dto.MusicianDTO;
 @SpringBootTest
 class MusicianServiceIntegrationTest {
 
-    // because we're testing the service layer, we can't use a MockMvc
-    // because MockMvc only models a controller (in mockito format)
-
     @Autowired
     private MusicianService service;
 
@@ -29,60 +27,48 @@ class MusicianServiceIntegrationTest {
     private MusicianRepository repo;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper mapper;
 
-    private MusicianDTO mapToDTO(Musician musician) {
-        return this.modelMapper.map(musician, MusicianDTO.class);
+    private MusicianDTO map(Musician musician) {
+        return this.mapper.map(musician, MusicianDTO.class);
     }
 
-    // there's no objectMapper this time
-    // because we don't need to convert any returned objects to JSON
-    // that's a controller job, and we're not testing the controller! :D
+    private final Long TEST_ID = 1L;
 
-    private Long id;
-
-    private Musician testMusician;
-    private Musician testMusicianWithId;
-    private MusicianDTO musicianDTO;
-    private MusicianDTO musicianDTOWithId;
-
-    @BeforeEach
-    void init() {
-        this.repo.deleteAll();
-        this.testMusician = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
-                MUSICIAN.GUITARIST.getType());
-        this.testMusicianWithId = this.repo.save(this.testMusician);
-        this.id = this.testMusicianWithId.getId();
-        this.musicianDTOWithId = this.mapToDTO(this.testMusicianWithId);
-        this.musicianDTO = new MusicianDTO(null, this.testMusician.getName(), this.testMusician.getStrings(),
-                this.testMusician.getType());
-    }
+    private final Musician TEST_MUSICIAN = new Musician(TEST_ID, MUSICIAN.GUITARIST.getName(),
+            MUSICIAN.GUITARIST.getStrings(), MUSICIAN.GUITARIST.getType());
 
     @Test
     void createTest() throws Exception {
-        assertThat(this.musicianDTOWithId).isEqualTo(this.service.create(this.testMusician));
+        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        assertThat(this.service.create(TEST_MUSICIAN)).isEqualTo(expected);
     }
 
     @Test
     void readOneTest() throws Exception {
-        assertThat(this.musicianDTOWithId).isEqualTo(this.service.read(this.id));
+        this.repo.save(TEST_MUSICIAN);
+        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        assertThat(this.service.read(TEST_ID)).isEqualTo(expected);
     }
 
     @Test
     void readAllTest() throws Exception {
-        // check this one out with a breakpoint and running it in debug mode
-        // so you can see the stream happening
-        assertThat(Stream.of(this.musicianDTOWithId).collect(Collectors.toList())).isEqualTo(this.service.read());
+        List<MusicianDTO> musicians = new ArrayList<>();
+        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        musicians.add(expected);
+        this.repo.save(TEST_MUSICIAN);
+        assertThat(this.service.read()).isEqualTo(Stream.of(musicians).collect(Collectors.toList()).get(0));
     }
 
     @Test
     void updateTest() throws Exception {
-        assertThat(this.musicianDTOWithId).isEqualTo(this.service.update(this.musicianDTO, this.id));
+        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        assertThat(this.service.update(expected, TEST_ID)).isEqualTo(expected);
     }
 
     @Test
     void deleteTest() throws Exception {
-        assertThat(this.service.delete(this.id)).isTrue();
+        assertThat(this.service.delete(TEST_ID)).isTrue();
     }
 
 }
