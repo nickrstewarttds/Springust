@@ -57,24 +57,32 @@ class MusicianControllerIntegrationTest {
     private final String URI = "/musician";
 
     private final Long TEST_ID = 1L;
-    private final Musician TEST_MUSICIAN = new Musician(TEST_ID, MUSICIAN.GUITARIST.getName(),
+
+    private final Musician TEST_GUITARIST = new Musician(TEST_ID, MUSICIAN.GUITARIST.getName(),
             MUSICIAN.GUITARIST.getStrings(), MUSICIAN.GUITARIST.getType());
+    private final Musician TEST_SAXOPHONIST = new Musician(TEST_ID + 1, MUSICIAN.SAXOPHONIST.getName(),
+            MUSICIAN.SAXOPHONIST.getStrings(), MUSICIAN.SAXOPHONIST.getType());
+    private final Musician TEST_BASSIST = new Musician(TEST_ID + 2, MUSICIAN.BASSIST.getName(),
+            MUSICIAN.BASSIST.getStrings(), MUSICIAN.BASSIST.getType());
+    private final Musician TEST_DRUMMER = new Musician(TEST_ID + 3, MUSICIAN.DRUMMER.getName(),
+            MUSICIAN.DRUMMER.getStrings(), MUSICIAN.DRUMMER.getType());
+
     private final Band TEST_BAND = new Band(TEST_ID, BAND.TMG.getName());
 
     @Test
     void testCreate() throws Exception {
-        TEST_MUSICIAN.setId(TEST_ID + 1);
-        TEST_MUSICIAN.setBand(TEST_BAND);
-        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        TEST_GUITARIST.setId(TEST_ID + 1);
+        TEST_GUITARIST.setBand(TEST_BAND);
+        MusicianDTO expected = this.map(TEST_GUITARIST);
 
         this.mvc.perform(post(URI + "/create").accept(JSON_FORMAT).contentType(JSON_FORMAT)
-                .content(this.jsonifier.writeValueAsString(TEST_MUSICIAN))).andExpect(status().isCreated())
+                .content(this.jsonifier.writeValueAsString(TEST_GUITARIST))).andExpect(status().isCreated())
                 .andExpect(content().json(this.jsonifier.writeValueAsString(expected)));
     }
 
     @Test
     void testReadOne() throws Exception {
-        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        MusicianDTO expected = this.map(TEST_GUITARIST);
 
         this.mvc.perform(get(URI + "/read/" + TEST_ID).accept(JSON_FORMAT)).andExpect(status().isOk())
                 .andExpect(content().json(this.jsonifier.writeValueAsString(expected)));
@@ -83,7 +91,10 @@ class MusicianControllerIntegrationTest {
     @Test
     void testReadAll() throws Exception {
         List<MusicianDTO> musicians = new ArrayList<>();
-        musicians.add(this.map(TEST_MUSICIAN));
+        musicians.add(this.map(TEST_GUITARIST));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_DRUMMER));
 
         this.mvc.perform(get(URI + "/read").accept(JSON_FORMAT)).andExpect(status().isOk())
                 .andExpect(content().json(this.jsonifier.writeValueAsString(musicians)));
@@ -91,10 +102,10 @@ class MusicianControllerIntegrationTest {
 
     @Test
     void testUpdate() throws Exception {
-        MusicianDTO expected = this.map(TEST_MUSICIAN);
+        MusicianDTO expected = this.map(TEST_GUITARIST);
 
         this.mvc.perform(put(URI + "/update/" + TEST_ID).accept(JSON_FORMAT).contentType(JSON_FORMAT)
-                .content(this.jsonifier.writeValueAsString(TEST_MUSICIAN))).andExpect(status().isAccepted())
+                .content(this.jsonifier.writeValueAsString(TEST_GUITARIST))).andExpect(status().isAccepted())
                 .andExpect(content().json(this.jsonifier.writeValueAsString(expected)));
     }
 

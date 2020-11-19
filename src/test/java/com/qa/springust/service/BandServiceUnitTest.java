@@ -7,8 +7,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -46,24 +48,26 @@ class BandServiceUnitTest {
     private final Musician TEST_MUSICIAN = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
             MUSICIAN.GUITARIST.getType());
 
-    private final Band TEST_BAND = new Band(BAND.TMG.getName());
+    private final Band TEST_BAND1 = new Band(BAND.TMG.getName());
+    private final Band TEST_BAND2 = new Band(TEST_ID + 1, BAND.TEG.getName());
+    private final Band TEST_BAND3 = new Band(TEST_ID + 2, BAND.TEL.getName());
 
     @Test
     void createTest() throws Exception {
-        TEST_BAND.setId(TEST_ID);
-        BandDTO expected = this.map(TEST_BAND);
+        TEST_BAND1.setId(TEST_ID);
+        BandDTO expected = this.map(TEST_BAND1);
 
-        when(this.repo.save(TEST_BAND)).thenReturn(TEST_BAND);
-        assertThat(this.service.create(TEST_BAND)).isEqualTo(expected);
-        verify(this.repo, atLeastOnce()).save(TEST_BAND);
+        when(this.repo.save(TEST_BAND1)).thenReturn(TEST_BAND1);
+        assertThat(this.service.create(TEST_BAND1)).isEqualTo(expected);
+        verify(this.repo, atLeastOnce()).save(TEST_BAND1);
     }
 
     @Test
     void readOneTest() throws Exception {
-        TEST_BAND.setId(TEST_ID);
-        BandDTO expected = this.map(TEST_BAND);
+        TEST_BAND1.setId(TEST_ID);
+        BandDTO expected = this.map(TEST_BAND1);
 
-        when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND));
+        when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND1));
         assertThat(this.service.read(TEST_ID)).isEqualTo(expected);
         verify(this.repo, atLeastOnce()).findById(TEST_ID);
     }
@@ -71,8 +75,8 @@ class BandServiceUnitTest {
     @Test
     void readOneWrongIdTest() throws Exception {
         List<Band> bands = new ArrayList<>();
-        TEST_BAND.setId(TEST_ID);
-        bands.add(TEST_BAND);
+        TEST_BAND1.setId(TEST_ID);
+        bands.add(TEST_BAND1);
 
         when(this.repo.findById(TEST_ID)).thenThrow(new BandNotFoundException());
         assertThrows(BandNotFoundException.class, () -> this.service.read(TEST_ID));
@@ -81,8 +85,8 @@ class BandServiceUnitTest {
     @Test
     void readAllTest() throws Exception {
         List<Band> bands = new ArrayList<>();
-        TEST_BAND.setId(TEST_ID);
-        bands.add(TEST_BAND);
+        TEST_BAND1.setId(TEST_ID);
+        bands.add(TEST_BAND1);
 
         when(this.repo.findAll()).thenReturn(bands);
         assertThat(this.service.read().isEmpty()).isFalse();
@@ -92,13 +96,13 @@ class BandServiceUnitTest {
     @Test
     void updateTest() throws Exception {
         TEST_MUSICIAN.setId(TEST_ID);
-        BandDTO expected = this.map(TEST_BAND);
+        BandDTO expected = this.map(TEST_BAND1);
 
-        when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND));
-        when(this.repo.save(TEST_BAND)).thenReturn(TEST_BAND);
+        when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND1));
+        when(this.repo.save(TEST_BAND1)).thenReturn(TEST_BAND1);
         assertThat(this.service.update(expected, TEST_ID)).isEqualTo(expected);
         verify(this.repo, atLeastOnce()).findById(TEST_ID);
-        verify(this.repo, atLeastOnce()).save(TEST_BAND);
+        verify(this.repo, atLeastOnce()).save(TEST_BAND1);
     }
 
     @Test
@@ -118,6 +122,31 @@ class BandServiceUnitTest {
         when(this.repo.existsById(TEST_ID)).thenReturn(found);
         assertThrows(BandNotFoundException.class, () -> this.service.delete(TEST_ID));
         verify(this.repo, atLeastOnce()).existsById(TEST_ID);
+    }
+
+    @Test
+    void findByNameTest() {
+        List<Band> bands = new ArrayList<>();
+        TEST_BAND1.setId(TEST_ID);
+        bands.add(TEST_BAND1);
+
+        when(this.repo.findByName(TEST_BAND1.getName())).thenReturn(bands);
+        assertThat(this.repo.findByName(TEST_BAND1.getName())).asList().isEqualTo(bands);
+        verify(this.repo, atLeastOnce()).findByName(TEST_BAND1.getName());
+    }
+
+    @Test
+    void orderByNameTest() {
+        List<Band> bands = new ArrayList<>();
+        TEST_BAND1.setId(TEST_ID);
+        bands.add(TEST_BAND2);
+        bands.add(TEST_BAND3);
+        bands.add(TEST_BAND1);
+
+        when(this.repo.orderByName()).thenReturn(bands);
+        assertThat(this.repo.orderByName().stream().sorted(Comparator.comparing(Band::getName))
+                .collect(Collectors.toList())).isEqualTo(bands);
+        verify(this.repo, atLeastOnce()).orderByName();
     }
 
 }
