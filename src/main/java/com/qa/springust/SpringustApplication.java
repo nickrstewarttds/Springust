@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
-@EnableWebMvc // - enables Swagger UI at <host>:<port>/swagger-ui/index.html
+@EnableWebMvc
 public class SpringustApplication {
 
     public static void main(String[] args) {

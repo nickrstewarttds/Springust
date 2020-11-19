@@ -64,7 +64,7 @@ public class BandController {
 
     @GetMapping("/read/names")
     public ResponseEntity<List<BandDTO>> orderByName() {
-        return ResponseEntity.ok(this.service.orderByNameAZ());
+        return ResponseEntity.ok(this.service.orderByName());
     }
 
 }

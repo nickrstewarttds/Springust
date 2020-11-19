@@ -15,12 +15,10 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @Data
-@ToString
 public class Band {
 
     @Id

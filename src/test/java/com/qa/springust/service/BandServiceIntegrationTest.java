@@ -53,7 +53,6 @@ class BandServiceIntegrationTest {
     void readOneTest() throws Exception {
         this.repo.save(TEST_BAND1);
         BandDTO expected = this.mapToDTO(TEST_BAND1);
-
         assertThat(this.service.read(TEST_ID)).isEqualTo(expected);
     }
 
@@ -103,7 +102,7 @@ class BandServiceIntegrationTest {
         bands.add(TEST_BAND2);
         bands.add(TEST_BAND3);
 
-        assertThat(this.service.orderByNameAZ().stream().map(e -> e.getName())).isEqualTo(bands.stream()
+        assertThat(this.service.orderByName().stream().map(e -> e.getName())).isEqualTo(bands.stream()
                 .sorted(Comparator.comparing(Band::getName)).map(e -> e.getName()).collect(Collectors.toList()));
     }
 

@@ -20,14 +20,14 @@ public class BandService {
 
     private ModelMapper mapper;
 
+    private BandDTO mapToDTO(Band band) {
+        return this.mapper.map(band, BandDTO.class);
+    }
+
     @Autowired
     public BandService(BandRepository repo, ModelMapper mapper) {
         this.repo = repo;
         this.mapper = mapper;
-    }
-
-    private BandDTO mapToDTO(Band band) {
-        return this.mapper.map(band, BandDTO.class);
     }
 
     public BandDTO create(Band band) {
@@ -62,7 +62,7 @@ public class BandService {
         return this.repo.findByName(name).stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public List<BandDTO> orderByNameAZ() {
+    public List<BandDTO> orderByName() {
         return this.repo.orderByName().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 

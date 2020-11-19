@@ -20,14 +20,14 @@ public class MusicianService {
 
     private ModelMapper mapper;
 
+    private MusicianDTO mapToDTO(Musician musician) {
+        return this.mapper.map(musician, MusicianDTO.class);
+    }
+
     @Autowired
     public MusicianService(MusicianRepository repo, ModelMapper mapper) {
         this.repo = repo;
         this.mapper = mapper;
-    }
-
-    private MusicianDTO mapToDTO(Musician musician) {
-        return this.mapper.map(musician, MusicianDTO.class);
     }
 
     public MusicianDTO create(Musician musician) {
@@ -73,15 +73,15 @@ public class MusicianService {
         return this.repo.findByType(type).stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public List<MusicianDTO> orderByNameAZ() {
+    public List<MusicianDTO> orderByName() {
         return this.repo.orderByName().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public List<MusicianDTO> orderByStringsAsc() {
+    public List<MusicianDTO> orderByStrings() {
         return this.repo.orderByStrings().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public List<MusicianDTO> orderByTypeAZ() {
+    public List<MusicianDTO> orderByType() {
         return this.repo.orderByType().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 

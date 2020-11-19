@@ -74,17 +74,17 @@ public class MusicianController {
 
     @GetMapping("/read/names")
     public ResponseEntity<List<MusicianDTO>> orderByName() {
-        return ResponseEntity.ok(this.service.orderByNameAZ());
+        return ResponseEntity.ok(this.service.orderByName());
     }
 
     @GetMapping("/read/strings")
     public ResponseEntity<List<MusicianDTO>> orderByStrings() {
-        return ResponseEntity.ok(this.service.orderByStringsAsc());
+        return ResponseEntity.ok(this.service.orderByStrings());
     }
 
     @GetMapping("/read/types")
     public ResponseEntity<List<MusicianDTO>> orderByType() {
-        return ResponseEntity.ok(this.service.orderByTypeAZ());
+        return ResponseEntity.ok(this.service.orderByType());
     }
 
 }

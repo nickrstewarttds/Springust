@@ -39,7 +39,7 @@ class BandServiceUnitTest {
     @Autowired
     private ModelMapper mapper;
 
-    private BandDTO map(Band band) {
+    private BandDTO mapToDTO(Band band) {
         return this.mapper.map(band, BandDTO.class);
     }
 
@@ -55,7 +55,7 @@ class BandServiceUnitTest {
     @Test
     void createTest() throws Exception {
         TEST_BAND1.setId(TEST_ID);
-        BandDTO expected = this.map(TEST_BAND1);
+        BandDTO expected = this.mapToDTO(TEST_BAND1);
 
         when(this.repo.save(TEST_BAND1)).thenReturn(TEST_BAND1);
         assertThat(this.service.create(TEST_BAND1)).isEqualTo(expected);
@@ -65,7 +65,7 @@ class BandServiceUnitTest {
     @Test
     void readOneTest() throws Exception {
         TEST_BAND1.setId(TEST_ID);
-        BandDTO expected = this.map(TEST_BAND1);
+        BandDTO expected = this.mapToDTO(TEST_BAND1);
 
         when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND1));
         assertThat(this.service.read(TEST_ID)).isEqualTo(expected);
@@ -96,7 +96,7 @@ class BandServiceUnitTest {
     @Test
     void updateTest() throws Exception {
         TEST_MUSICIAN.setId(TEST_ID);
-        BandDTO expected = this.map(TEST_BAND1);
+        BandDTO expected = this.mapToDTO(TEST_BAND1);
 
         when(this.repo.findById(TEST_ID)).thenReturn(Optional.of(TEST_BAND1));
         when(this.repo.save(TEST_BAND1)).thenReturn(TEST_BAND1);
@@ -116,7 +116,7 @@ class BandServiceUnitTest {
     }
 
     @Test
-    void deleteWrongIDTest() {
+    void deleteWrongIDTest() throws Exception {
         boolean found = false;
 
         when(this.repo.existsById(TEST_ID)).thenReturn(found);
@@ -125,7 +125,7 @@ class BandServiceUnitTest {
     }
 
     @Test
-    void findByNameTest() {
+    void findByNameTest() throws Exception {
         List<Band> bands = new ArrayList<>();
         TEST_BAND1.setId(TEST_ID);
         bands.add(TEST_BAND1);
@@ -136,7 +136,7 @@ class BandServiceUnitTest {
     }
 
     @Test
-    void orderByNameTest() {
+    void orderByNameTest() throws Exception {
         List<Band> bands = new ArrayList<>();
         TEST_BAND1.setId(TEST_ID);
         bands.add(TEST_BAND2);

@@ -19,10 +19,6 @@ public class SpringustBeanUtils {
         copyProperties(source, target, getNullPropertyNames(source));
     }
 
-    // this method allows your update() method to use all the source object's values
-    // as default
-    // for instance, if updating a guitarist or band, i only need to include the
-    // values i want to change, e.g. "name":"new value"
     private static String[] getNullPropertyNames(Object source) {
         final BeanWrapper wrappedSourceObject = new BeanWrapperImpl(source);
 
