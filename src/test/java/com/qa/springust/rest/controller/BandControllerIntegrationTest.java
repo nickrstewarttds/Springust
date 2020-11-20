@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -67,7 +68,7 @@ class BandControllerIntegrationTest {
             MUSICIAN.DRUMMER.getStrings(), MUSICIAN.DRUMMER.getType());
 
     @Test
-    void testCreate() throws Exception {
+    void createTest() throws Exception {
         TEST_BAND1.setId(TEST_ID + 1);
         BandDTO expected = this.map(TEST_BAND1);
 
@@ -77,7 +78,7 @@ class BandControllerIntegrationTest {
     }
 
     @Test
-    void testReadOne() throws Exception {
+    void readOneTest() throws Exception {
         List<Musician> musicians = new ArrayList<>();
         musicians.add(TEST_GUITARIST);
         musicians.add(TEST_SAXOPHONIST);
@@ -92,7 +93,7 @@ class BandControllerIntegrationTest {
     }
 
     @Test
-    void testReadAll() throws Exception {
+    void readAllTest() throws Exception {
         List<Musician> musicians = new ArrayList<>();
         musicians.add(TEST_GUITARIST);
         musicians.add(TEST_SAXOPHONIST);
@@ -111,7 +112,7 @@ class BandControllerIntegrationTest {
     }
 
     @Test
-    void testUpdate() throws Exception {
+    void updateTest() throws Exception {
         BandDTO expected = this.map(TEST_BAND1);
 
         this.mvc.perform(put(URI + "/update/" + TEST_ID).accept(JSON_FORMAT).contentType(JSON_FORMAT)
@@ -122,6 +123,45 @@ class BandControllerIntegrationTest {
     @Test
     void testDelete() throws Exception {
         this.mvc.perform(delete(URI + "/delete/" + TEST_ID)).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void findByNameTest() throws Exception {
+        List<Musician> musicians = new ArrayList<>();
+        musicians.add(TEST_GUITARIST);
+        musicians.add(TEST_SAXOPHONIST);
+        musicians.add(TEST_BASSIST);
+        musicians.add(TEST_DRUMMER);
+
+        TEST_BAND1.setMusicians(musicians);
+
+        List<BandDTO> bands = new ArrayList<>();
+        bands.add(this.map(TEST_BAND1));
+        bands.add(this.map(TEST_BAND2));
+        bands.add(this.map(TEST_BAND3));
+
+        this.mvc.perform(get(URI + "/readBy/" + TEST_BAND1.getName()).accept(JSON_FORMAT))
+                .andExpect(content().json(this.jsonifier.writeValueAsString(bands.stream()
+                        .filter(e -> e.getName().equals(TEST_BAND1.getName())).collect(Collectors.toList()))));
+    }
+
+    @Test
+    void orderByNameTest() throws Exception {
+        List<Musician> musicians = new ArrayList<>();
+        musicians.add(TEST_GUITARIST);
+        musicians.add(TEST_SAXOPHONIST);
+        musicians.add(TEST_BASSIST);
+        musicians.add(TEST_DRUMMER);
+
+        TEST_BAND1.setMusicians(musicians);
+
+        List<BandDTO> bands = new ArrayList<>();
+        bands.add(this.map(TEST_BAND2));
+        bands.add(this.map(TEST_BAND3));
+        bands.add(this.map(TEST_BAND1));
+
+        this.mvc.perform(get(URI + "/read/names").accept(JSON_FORMAT)).andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(bands)));
     }
 
 }

@@ -57,17 +57,17 @@ public class MusicianController {
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 
-    @GetMapping("/readBy/{name}")
+    @GetMapping("/readBy/name/{name}")
     public ResponseEntity<List<MusicianDTO>> findByName(@PathVariable String name) {
         return ResponseEntity.ok(this.service.findByName(name));
     }
 
-    @GetMapping("/readBy/{strings}")
+    @GetMapping("/readBy/strings/{strings}")
     public ResponseEntity<List<MusicianDTO>> findByStrings(@PathVariable Integer strings) {
         return ResponseEntity.ok(this.service.findByStrings(strings));
     }
 
-    @GetMapping("/readBy/{type}")
+    @GetMapping("/readBy/type/{type}")
     public ResponseEntity<List<MusicianDTO>> findByType(@PathVariable String type) {
         return ResponseEntity.ok(this.service.findByType(type));
     }

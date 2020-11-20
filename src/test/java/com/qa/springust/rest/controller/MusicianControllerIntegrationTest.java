@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -36,13 +37,9 @@ class MusicianControllerIntegrationTest {
 
     private static final MediaType JSON_FORMAT = MediaType.APPLICATION_JSON;
 
-    // spring's in-house, request-making backend - acting as our controller
-    // you only need this in integration testing - no mocked service required!
-    // this acts as postman would, across your whole application
     @Autowired
     private MockMvc mvc;
 
-    // this specifically maps objects to JSON format for us
     @Autowired
     private ObjectMapper jsonifier;
 
@@ -53,7 +50,6 @@ class MusicianControllerIntegrationTest {
         return this.mapper.map(musician, MusicianDTO.class);
     }
 
-    // i've set the root string for our URI to avoid magic strings
     private final String URI = "/musician";
 
     private final Long TEST_ID = 1L;
@@ -112,6 +108,82 @@ class MusicianControllerIntegrationTest {
     @Test
     void testDelete() throws Exception {
         this.mvc.perform(delete(URI + "/delete/" + TEST_ID)).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void findByNameTest() throws Exception {
+        List<MusicianDTO> musicians = new ArrayList<>();
+        musicians.add(this.map(TEST_GUITARIST));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_DRUMMER));
+
+        this.mvc.perform(get(URI + "/readBy/name/" + TEST_GUITARIST.getName()).accept(JSON_FORMAT))
+                .andExpect(content().json(this.jsonifier.writeValueAsString(musicians.stream()
+                        .filter(e -> e.getName().equals(TEST_GUITARIST.getName())).collect(Collectors.toList()))));
+    }
+
+    @Test
+    void findByStringsTest() throws Exception {
+        List<MusicianDTO> musicians = new ArrayList<>();
+        musicians.add(this.map(TEST_GUITARIST));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_DRUMMER));
+
+        this.mvc.perform(get(URI + "/readBy/strings/" + TEST_GUITARIST.getStrings()).accept(JSON_FORMAT))
+                .andExpect(content().json(this.jsonifier.writeValueAsString(
+                        musicians.stream().filter(e -> e.getStrings().equals(TEST_GUITARIST.getStrings()))
+                                .collect(Collectors.toList()))));
+    }
+
+    @Test
+    void findByTypeTest() throws Exception {
+        List<MusicianDTO> musicians = new ArrayList<>();
+        musicians.add(this.map(TEST_GUITARIST));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_DRUMMER));
+
+        this.mvc.perform(get(URI + "/readBy/type/" + TEST_GUITARIST.getType()).accept(JSON_FORMAT))
+                .andExpect(content().json(this.jsonifier.writeValueAsString(musicians.stream()
+                        .filter(e -> e.getType().equals(TEST_GUITARIST.getType())).collect(Collectors.toList()))));
+    }
+
+    @Test
+    void orderByNameTest() throws Exception {
+        List<MusicianDTO> musicians = new ArrayList<>();
+        musicians.add(this.map(TEST_GUITARIST));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_DRUMMER));
+
+        this.mvc.perform(get(URI + "/read/names").accept(JSON_FORMAT)).andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(musicians)));
+    }
+
+    @Test
+    void orderByStringsTest() throws Exception {
+        List<MusicianDTO> musicians = new ArrayList<>();
+        musicians.add(this.map(TEST_DRUMMER));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_GUITARIST));
+
+        this.mvc.perform(get(URI + "/read/strings").accept(JSON_FORMAT)).andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(musicians)));
+    }
+
+    @Test
+    void orderByTypeTest() throws Exception {
+        List<MusicianDTO> musicians = new ArrayList<>();
+        musicians.add(this.map(TEST_BASSIST));
+        musicians.add(this.map(TEST_DRUMMER));
+        musicians.add(this.map(TEST_GUITARIST));
+        musicians.add(this.map(TEST_SAXOPHONIST));
+
+        this.mvc.perform(get(URI + "/read/types").accept(JSON_FORMAT)).andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(musicians)));
     }
 
 }
