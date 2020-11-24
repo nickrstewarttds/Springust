@@ -3,15 +3,11 @@ package com.qa.springust.rest.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class BandDTO {
 
     private Long id;
