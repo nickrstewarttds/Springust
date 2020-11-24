@@ -53,11 +53,7 @@ public class MusicianService {
     }
 
     public boolean delete(Long id) {
-        if (!this.repo.existsById(id)) {
-            throw new MusicianNotFoundException();
-        } else {
-            this.repo.deleteById(id);
-        }
+        this.repo.deleteById(id);
         return !this.repo.existsById(id);
     }
 

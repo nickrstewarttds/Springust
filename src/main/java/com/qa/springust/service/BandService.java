@@ -50,11 +50,7 @@ public class BandService {
     }
 
     public boolean delete(Long id) {
-        if (!this.repo.existsById(id)) {
-            throw new BandNotFoundException();
-        } else {
-            this.repo.deleteById(id);
-        }
+        this.repo.deleteById(id);
         return !this.repo.existsById(id);
     }
 

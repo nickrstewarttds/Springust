@@ -109,19 +109,8 @@ class MusicianServiceUnitTest {
     @Test
     void deleteTest() throws Exception {
         boolean found = false;
-
-        when(this.repo.existsById(TEST_ID)).thenReturn(!found, found);
-        assertThat(this.service.delete(TEST_ID)).isNotEqualTo(found);
-        verify(this.repo, atLeastOnce()).deleteById(TEST_ID);
-        verify(this.repo, atLeastOnce()).existsById(TEST_ID);
-    }
-
-    @Test
-    void deleteWrongIdTest() throws Exception {
-        boolean found = false;
-
         when(this.repo.existsById(TEST_ID)).thenReturn(found);
-        assertThrows(MusicianNotFoundException.class, () -> this.service.delete(TEST_ID));
+        assertThat(this.service.delete(TEST_ID)).isNotEqualTo(found);
         verify(this.repo, atLeastOnce()).existsById(TEST_ID);
     }
 
