@@ -57,7 +57,7 @@ public class BandController {
                 : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/readBy/{name}")
+    @GetMapping("/readBy/name/{name}")
     public ResponseEntity<List<BandDTO>> findByName(@PathVariable String name) {
         return ResponseEntity.ok(this.service.findByName(name));
     }

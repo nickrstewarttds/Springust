@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.qa.springust.global.BAND;
 import com.qa.springust.persistence.domain.Band;
 
 @SpringBootTest
@@ -23,9 +22,9 @@ class BandRepositoryTest {
     @Autowired
     private BandRepository repo;
 
-    private final Band TEST_BAND1 = new Band(BAND.TMG.getName());
-    private final Band TEST_BAND2 = new Band(BAND.TEG.getName());
-    private final Band TEST_BAND3 = new Band(BAND.TEL.getName());
+    private final Band TEST_BAND1 = new Band("The Mountain Goats");
+    private final Band TEST_BAND2 = new Band("The Extra Glenns");
+    private final Band TEST_BAND3 = new Band("The Congress");
 
     private final List<Band> DATA_SET = List.of(TEST_BAND1, TEST_BAND2, TEST_BAND3);
 
@@ -38,7 +37,7 @@ class BandRepositoryTest {
     void findByNameTest() throws Exception {
         assertThat(
                 this.repo.findByName(TEST_BAND1.getName()).stream().map(e -> e.getName()).collect(Collectors.toList()))
-                        .isEqualTo(DATA_SET.stream().filter(e -> e.getName().equals(BAND.TMG.getName()))
+                        .isEqualTo(DATA_SET.stream().filter(e -> e.getName().equals("The Mountain Goats"))
                                 .map(e -> e.getName()).collect(Collectors.toList()));
     }
 

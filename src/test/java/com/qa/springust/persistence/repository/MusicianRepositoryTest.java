@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.qa.springust.global.MUSICIAN;
 import com.qa.springust.persistence.domain.Musician;
 
 @SpringBootTest
@@ -23,14 +22,10 @@ class MusicianRepositoryTest {
     @Autowired
     private MusicianRepository repo;
 
-    private final Musician TEST_GUITARIST = new Musician(MUSICIAN.GUITARIST.getName(), MUSICIAN.GUITARIST.getStrings(),
-            MUSICIAN.GUITARIST.getType());
-    private final Musician TEST_SAXOPHONIST = new Musician(MUSICIAN.SAXOPHONIST.getName(),
-            MUSICIAN.SAXOPHONIST.getStrings(), MUSICIAN.SAXOPHONIST.getType());
-    private final Musician TEST_BASSIST = new Musician(MUSICIAN.BASSIST.getName(), MUSICIAN.BASSIST.getStrings(),
-            MUSICIAN.BASSIST.getType());
-    private final Musician TEST_DRUMMER = new Musician(MUSICIAN.DRUMMER.getName(), MUSICIAN.DRUMMER.getStrings(),
-            MUSICIAN.DRUMMER.getType());
+    private final Musician TEST_GUITARIST = new Musician("John Darnielle", 6, "guitarist");
+    private final Musician TEST_SAXOPHONIST = new Musician("Matt Douglas", 0, "saxophonist");
+    private final Musician TEST_BASSIST = new Musician("Peter Hughes", 4, "bassist");
+    private final Musician TEST_DRUMMER = new Musician("Jon Wurster", 0, "drummer");
 
     private final List<Musician> DATA_SET = List.of(TEST_GUITARIST, TEST_SAXOPHONIST, TEST_BASSIST, TEST_DRUMMER);
 
@@ -41,7 +36,7 @@ class MusicianRepositoryTest {
 
     @Test
     void findByNameTest() throws Exception {
-        assertThat(this.repo.findByName(MUSICIAN.GUITARIST.getName()).stream().map(e -> e.getName())
+        assertThat(this.repo.findByName(TEST_GUITARIST.getName()).stream().map(e -> e.getName())
                 .collect(Collectors.toList()))
                         .isEqualTo(DATA_SET.stream().filter(e -> e.getName().equals(TEST_GUITARIST.getName()))
                                 .map(e -> e.getName()).collect(Collectors.toList()));
@@ -49,7 +44,7 @@ class MusicianRepositoryTest {
 
     @Test
     void findByStringsTest() throws Exception {
-        assertThat(this.repo.findByStrings(MUSICIAN.GUITARIST.getStrings()).stream().map(e -> e.getStrings())
+        assertThat(this.repo.findByStrings(TEST_GUITARIST.getStrings()).stream().map(e -> e.getStrings())
                 .collect(Collectors.toList()))
                         .isEqualTo(DATA_SET.stream().filter(e -> e.getStrings().equals(TEST_GUITARIST.getStrings()))
                                 .map(e -> e.getStrings()).collect(Collectors.toList()));
@@ -57,7 +52,7 @@ class MusicianRepositoryTest {
 
     @Test
     void findByTypeTest() throws Exception {
-        assertThat(this.repo.findByType(MUSICIAN.GUITARIST.getType()).stream().map(e -> e.getType())
+        assertThat(this.repo.findByType(TEST_GUITARIST.getType()).stream().map(e -> e.getType())
                 .collect(Collectors.toList()))
                         .isEqualTo(DATA_SET.stream().filter(e -> e.getType().equals(TEST_GUITARIST.getType()))
                                 .map(e -> e.getType()).collect(Collectors.toList()));

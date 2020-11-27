@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +22,6 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qa.springust.global.BAND;
-import com.qa.springust.global.MUSICIAN;
 import com.qa.springust.persistence.domain.Band;
 import com.qa.springust.persistence.domain.Musician;
 import com.qa.springust.rest.dto.BandDTO;
@@ -35,15 +32,13 @@ import com.qa.springust.rest.dto.BandDTO;
 @ActiveProfiles(profiles = "test")
 class BandControllerIntegrationTest {
 
-    private static final MediaType JSON_FORMAT = MediaType.APPLICATION_JSON;
-
     @Autowired
     private MockMvc mvc;
 
     @Autowired
     private ModelMapper mapper;
 
-    private BandDTO map(Band band) {
+    private BandDTO mapToDTO(Band band) {
         return this.mapper.map(band, BandDTO.class);
     }
 
@@ -52,116 +47,70 @@ class BandControllerIntegrationTest {
 
     private final String URI = "/band";
 
-    private final Long TEST_ID = 1L;
+    private final Band TEST_BAND1 = new Band(1L, "The Mountain Goats");
+    private final Band TEST_BAND2 = new Band(2L, "The Extra Glenns");
+    private final Band TEST_BAND3 = new Band(3L, "The Congress");
 
-    private final Band TEST_BAND1 = new Band(TEST_ID, BAND.TMG.getName());
-    private final Band TEST_BAND2 = new Band(TEST_ID + 1, BAND.TEG.getName());
-    private final Band TEST_BAND3 = new Band(TEST_ID + 2, BAND.TEL.getName());
+    private final List<Band> BANDS = List.of(TEST_BAND1, TEST_BAND2, TEST_BAND3);
 
-    private final Musician TEST_GUITARIST = new Musician(TEST_ID, MUSICIAN.GUITARIST.getName(),
-            MUSICIAN.GUITARIST.getStrings(), MUSICIAN.GUITARIST.getType());
-    private final Musician TEST_SAXOPHONIST = new Musician(TEST_ID + 1, MUSICIAN.SAXOPHONIST.getName(),
-            MUSICIAN.SAXOPHONIST.getStrings(), MUSICIAN.SAXOPHONIST.getType());
-    private final Musician TEST_BASSIST = new Musician(TEST_ID + 2, MUSICIAN.BASSIST.getName(),
-            MUSICIAN.BASSIST.getStrings(), MUSICIAN.BASSIST.getType());
-    private final Musician TEST_DRUMMER = new Musician(TEST_ID + 3, MUSICIAN.DRUMMER.getName(),
-            MUSICIAN.DRUMMER.getStrings(), MUSICIAN.DRUMMER.getType());
+    private final Musician TEST_GUITARIST = new Musician(1L, "John Darnielle", 6, "guitarist");
+    private final Musician TEST_SAXOPHONIST = new Musician(2L, "Matt Douglas", 0, "saxophonist");
+    private final Musician TEST_BASSIST = new Musician(3L, "Peter Hughes", 4, "bassist");
+    private final Musician TEST_DRUMMER = new Musician(4L, "Jon Wurster", 0, "drummer");
+
+    private final List<Musician> MUSICIANS = List.of(TEST_GUITARIST, TEST_SAXOPHONIST, TEST_BASSIST, TEST_DRUMMER);
 
     @Test
     void createTest() throws Exception {
-        TEST_BAND1.setId(TEST_ID + 1);
-        BandDTO expected = this.map(TEST_BAND1);
-
-        this.mvc.perform(post(URI + "/create").accept(JSON_FORMAT).contentType(JSON_FORMAT)
-                .content(this.jsonifier.writeValueAsString(TEST_BAND1))).andExpect(status().isCreated())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(expected)));
+        this.mvc.perform(post(URI + "/create").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).content(this.jsonifier.writeValueAsString(TEST_BAND1)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(this.mapToDTO(TEST_BAND1))));
     }
 
     @Test
     void readOneTest() throws Exception {
-        List<Musician> musicians = new ArrayList<>();
-        musicians.add(TEST_GUITARIST);
-        musicians.add(TEST_SAXOPHONIST);
-        musicians.add(TEST_BASSIST);
-        musicians.add(TEST_DRUMMER);
-
-        TEST_BAND1.setMusicians(musicians);
-        BandDTO expected = this.map(TEST_BAND1);
-
-        this.mvc.perform(get(URI + "/read/" + TEST_ID).accept(JSON_FORMAT)).andExpect(status().isOk())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(expected)));
+        TEST_BAND1.setMusicians(MUSICIANS);
+        this.mvc.perform(get(URI + "/read/" + TEST_BAND1.getId()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(this.mapToDTO(TEST_BAND1))));
     }
 
     @Test
     void readAllTest() throws Exception {
-        List<Musician> musicians = new ArrayList<>();
-        musicians.add(TEST_GUITARIST);
-        musicians.add(TEST_SAXOPHONIST);
-        musicians.add(TEST_BASSIST);
-        musicians.add(TEST_DRUMMER);
-
-        TEST_BAND1.setMusicians(musicians);
-
-        List<BandDTO> bands = new ArrayList<>();
-        bands.add(this.map(TEST_BAND1));
-        bands.add(this.map(TEST_BAND2));
-        bands.add(this.map(TEST_BAND3));
-
-        this.mvc.perform(get(URI + "/read").accept(JSON_FORMAT)).andExpect(status().isOk())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(bands)));
+        TEST_BAND1.setMusicians(MUSICIANS);
+        this.mvc.perform(get(URI + "/read").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier
+                        .writeValueAsString(BANDS.stream().map(this::mapToDTO).collect(Collectors.toList()))));
     }
 
     @Test
     void updateTest() throws Exception {
-        BandDTO expected = this.map(TEST_BAND1);
-
-        this.mvc.perform(put(URI + "/update/" + TEST_ID).accept(JSON_FORMAT).contentType(JSON_FORMAT)
-                .content(this.jsonifier.writeValueAsString(TEST_BAND1))).andExpect(status().isAccepted())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(expected)));
+        this.mvc.perform(put(URI + "/update/" + TEST_BAND1.getId()).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).content(this.jsonifier.writeValueAsString(TEST_BAND1)))
+                .andExpect(status().isAccepted())
+                .andExpect(content().json(this.jsonifier.writeValueAsString(this.mapToDTO(TEST_BAND1))));
     }
 
     @Test
-    void testDelete() throws Exception {
-        this.mvc.perform(delete(URI + "/delete/" + TEST_ID)).andExpect(status().isNoContent());
+    void deleteTest() throws Exception {
+        this.mvc.perform(delete(URI + "/delete/" + TEST_BAND1.getId())).andExpect(status().isNoContent());
     }
 
     @Test
     void findByNameTest() throws Exception {
-        List<Musician> musicians = new ArrayList<>();
-        musicians.add(TEST_GUITARIST);
-        musicians.add(TEST_SAXOPHONIST);
-        musicians.add(TEST_BASSIST);
-        musicians.add(TEST_DRUMMER);
-
-        TEST_BAND1.setMusicians(musicians);
-
-        List<BandDTO> bands = new ArrayList<>();
-        bands.add(this.map(TEST_BAND1));
-        bands.add(this.map(TEST_BAND2));
-        bands.add(this.map(TEST_BAND3));
-
-        this.mvc.perform(get(URI + "/readBy/" + TEST_BAND1.getName()).accept(JSON_FORMAT))
-                .andExpect(content().json(this.jsonifier.writeValueAsString(bands.stream()
+        TEST_BAND1.setMusicians(MUSICIANS);
+        this.mvc.perform(get(URI + "/readBy/name/" + TEST_BAND1.getName()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(this.jsonifier.writeValueAsString(BANDS.stream().map(this::mapToDTO)
                         .filter(e -> e.getName().equals(TEST_BAND1.getName())).collect(Collectors.toList()))));
     }
 
     @Test
     void orderByNameTest() throws Exception {
-        List<Musician> musicians = new ArrayList<>();
-        musicians.add(TEST_GUITARIST);
-        musicians.add(TEST_SAXOPHONIST);
-        musicians.add(TEST_BASSIST);
-        musicians.add(TEST_DRUMMER);
-
-        TEST_BAND1.setMusicians(musicians);
-
-        List<BandDTO> bands = new ArrayList<>();
-        bands.add(this.map(TEST_BAND2));
-        bands.add(this.map(TEST_BAND3));
-        bands.add(this.map(TEST_BAND1));
-
-        this.mvc.perform(get(URI + "/read/names").accept(JSON_FORMAT)).andExpect(status().isOk())
-                .andExpect(content().json(this.jsonifier.writeValueAsString(bands)));
+        TEST_BAND1.setMusicians(MUSICIANS);
+        this.mvc.perform(get(URI + "/read/names").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andExpect(content().json(this.jsonifier
+                        .writeValueAsString(BANDS.stream().map(this::mapToDTO).collect(Collectors.toList()))));
     }
 
 }
