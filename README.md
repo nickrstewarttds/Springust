@@ -46,8 +46,8 @@ Send as `application:json`:
 ```json
 {
   "name":"John Darnielle",
-  "strings"6,
-  "type":"guitarist,
+  "strings":6,
+  "type":"guitarist",
   "band":{
     "id":1
   }
