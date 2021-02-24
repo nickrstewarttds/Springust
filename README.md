@@ -24,3 +24,32 @@ Requirements (if using Eclipse):
 - Runs out-of-the-box on `localhost:8901` (can be changed within the `application-dev.properties` file)
 - H2 console is accessible at the path `/h2` with JDBC URL `jdbc:h2:mem:springust` and default username/password
 - Swagger UI showing API endpoints is accessible at the path `/swagger-ui/index.html`
+
+## Showing the One-To-Many relationship with Postman
+
+- Create the `Band` record first
+- Then add the `Musician` record to the `Band` record
+
+### Band
+
+Send as `application:json`:
+
+```json
+{
+  "name":"The Mountain Goats"
+}
+```
+
+### Musician
+
+Send as `application:json`:
+```json
+{
+  "name":"John Darnielle",
+  "strings"6,
+  "type":"guitarist,
+  "band":{
+    "id":1
+  }
+}
+```
